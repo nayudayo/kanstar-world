@@ -26,9 +26,11 @@ export default function MerchPage() {
           <Image
             src="/images/assets/merch/Merch.gif"
             alt="Merch"
-            fill
+            width={400}
+            height={400}
             className="object-contain"
             priority
+            unoptimized
           />
         </div>
         <p className="text-white text-2xl font-bold animate-pulse">

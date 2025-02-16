@@ -23,14 +23,14 @@ export default function MerchPage() {
       {/* Content */}
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center gap-8">
         <div className="relative w-[400px] h-[400px]">
-          <Image
-            src="/images/assets/merch/Merch.gif"
+          {/* Testing with regular img tag */}
+          <img
+            src="/images/assets/merch/Merch.GIF"
             alt="Merch"
-            width={400}
-            height={400}
-            className="object-contain"
-            priority
-            unoptimized
+            className="w-full h-full object-contain"
+            onError={(e) => {
+              console.error('Error loading image:', e);
+            }}
           />
         </div>
         <p className="text-white text-2xl font-bold animate-pulse">

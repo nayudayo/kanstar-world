@@ -1,0 +1,75 @@
+.star-wars {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  height: 100vh;
+  color: #fff;
+  font-family: 'Pathway Gothic One', sans-serif;
+  font-size: 500%;
+  font-weight: 600;
+  letter-spacing: 6px;
+  line-height: 150%;
+  perspective: 400px;
+  text-align: justify;
+  overflow: hidden;
+}
+
+.viewport {
+  position: relative;
+  height: calc(100vh - 80px); /* Account for navbar */
+  margin-top: 80px; /* Push down by navbar height */
+  width: 100%;
+  overflow: hidden;
+  transform: rotateX(25deg);
+  transform-origin: 50% 100%;
+}
+
+.crawl {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  animation: scroll 40s linear infinite;
+  transform-origin: 50% 100%;
+  will-change: transform;
+}
+
+.crawl-content {
+  position: relative;
+  min-height: 80vh;
+  padding: 15vh 0;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+.crawl-content .title {
+  font-size: 90%;
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.crawl-content .title h1 {
+  margin: 0 0 20px;
+  text-transform: uppercase;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+}
+
+.crawl-content .title h2 {
+  margin: 0;
+  font-size: 80%;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+}
+
+.crawl-content .content {
+  font-size: 40%;
+  max-width: 80%;
+  margin: 0 auto;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+} 

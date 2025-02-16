@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 const Footer = () => {
   return (
     <footer className="relative w-full bg-black py-20 px-8 border-t border-white/10">
@@ -6,15 +8,15 @@ const Footer = () => {
         <div className="space-y-6">
           <h4 className="text-white font-bold text-xl">Connect With Us</h4>
           <div className="flex gap-4">
-            <a href="#" className="text-gray-400 hover:text-white transition-colors">
+            <Link href="#" className="text-gray-400 hover:text-white transition-colors">
               Twitter
-            </a>
-            <a href="#" className="text-gray-400 hover:text-white transition-colors">
+            </Link>
+            <Link href="#" className="text-gray-400 hover:text-white transition-colors">
               Discord
-            </a>
-            <a href="#" className="text-gray-400 hover:text-white transition-colors">
+            </Link>
+            <Link href="#" className="text-gray-400 hover:text-white transition-colors">
               Telegram
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -23,19 +25,24 @@ const Footer = () => {
           <h4 className="text-white font-bold text-xl">Team</h4>
           <ul className="space-y-3">
             <li>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
                 About Us
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <Link href="/founders" className="text-gray-400 hover:text-white transition-colors">
+                Founders
+              </Link>
+            </li>
+            <li>
+              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
                 Careers
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
                 Partners
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
@@ -45,19 +52,19 @@ const Footer = () => {
           <h4 className="text-white font-bold text-xl">Quick Links</h4>
           <ul className="space-y-3">
             <li>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
                 Marketplace
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
                 Token
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
                 Roadmap
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
@@ -67,19 +74,19 @@ const Footer = () => {
           <h4 className="text-white font-bold text-xl">Legal</h4>
           <ul className="space-y-3">
             <li>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
                 Terms & Conditions
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
                 Privacy Policy
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
                 Cookie Policy
-              </a>
+              </Link>
             </li>
           </ul>
         </div>

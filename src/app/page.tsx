@@ -1,20 +1,20 @@
 "use client";
 
 import Image from "next/image";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import NftShowcase from "../components/NftShowcase";
+import OpeningCrawl from "../components/OpeningCrawl";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
-  const [selectedNft, setSelectedNft] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const sectionsRef = useRef<HTMLElement[]>([]);
   const navRef = useRef<HTMLElement>(null);
-  const sliderRef = useRef<HTMLDivElement>(null);
 
   // Roadmap section refs
   const roadmapRef = useRef<HTMLDivElement>(null);
@@ -28,7 +28,16 @@ export default function Home() {
   const y2027Ref = useRef<HTMLDivElement>(null);
   const y2028Ref = useRef<HTMLDivElement>(null);
 
+  const addToRefs = (el: HTMLElement | null) => {
+    if (el && !sectionsRef.current.includes(el)) {
+      sectionsRef.current.push(el);
+    }
+  };
+
   useLayoutEffect(() => {
+    // Force scroll to top on mount
+    window.scrollTo(0, 0);
+    
     const ctx = gsap.context(() => {
       // Navbar initial animation
       gsap.fromTo(navRef.current,
@@ -73,14 +82,14 @@ export default function Home() {
       // Create animations for each section
       sectionsRef.current.forEach((section, index) => {
         if (index === 1) {
-          // Second Section - Spaceship and Artwork
+          // Second Section - Spaceship only
           ScrollTrigger.create({
             trigger: section,
             start: "top top",
             end: "+=200%",
             pin: true,
             pinSpacing: true,
-            markers: true
+            markers: false
           });
 
           const timeline = gsap.timeline({
@@ -89,7 +98,7 @@ export default function Home() {
               start: "top top",
               end: "+=200%",
               scrub: 2,
-              markers: true
+              markers: false
             }
           });
 
@@ -101,18 +110,59 @@ export default function Home() {
               yPercent: 0,
               opacity: 1
             }, {
+              top: "20%",
+              left: "25%",
+              xPercent: -50,
+              yPercent: -50,
+              duration: 0.1
+            })
+            .to(".spaceship", {
+              top: "70%",
+              left: "50%",
+              xPercent: -50,
+              yPercent: -50,
+              duration: 0.1
+            })
+            .to(".spaceship", {
               top: "50%",
               left: "50%",
               xPercent: -50,
               yPercent: -50,
-              opacity: 1,
-              duration: 0.2
-            })
-            .to(".spaceship", {
-              opacity: 0,
-              scale: 0.8,
               duration: 0.1
             })
+            .to(".spaceship", {
+              top: "45%",
+              duration: 0.2,
+              repeat: 4,
+              yoyo: true,
+              ease: "power1.inOut"
+            })
+            .to(".spaceship", {
+              top: "50%",
+              duration: 0.1
+            });
+        } else if (index === 2) {
+          // Third Section - Artwork reveal
+          ScrollTrigger.create({
+            trigger: section,
+            start: "top top",
+            end: "+=200%",
+            pin: true,
+            pinSpacing: true,
+            markers: false
+          });
+
+          const timeline = gsap.timeline({
+            scrollTrigger: {
+              trigger: section,
+              start: "top top",
+              end: "+=200%",
+              scrub: 2,
+              markers: false
+            }
+          });
+
+          timeline
             .fromTo(".artwork-overlay", {
               opacity: 0,
               scale: 0.8,
@@ -121,8 +171,8 @@ export default function Home() {
               scale: 1,
               duration: 0.7
             });
-        } else if (index === 2) {
-          // Third Section - Roadmap
+        } else if (index === 3) {
+          // Fourth Section - Roadmap
           const tl = gsap.timeline({
             scrollTrigger: {
               trigger: section,
@@ -132,7 +182,7 @@ export default function Home() {
               pin: true,
               pinSpacing: true,
               anticipatePin: 1,
-              markers: true
+              markers: false
             }
           });
 
@@ -189,50 +239,55 @@ export default function Home() {
             // 2028 + Final rocket position
             .to(y2028Ref.current, { opacity: 1, scale: 1, duration: 1 })
             .to(rocketRef.current, { left: "95%", bottom: "35%", duration: 1 }, "<");
+        } else if (index === 4) {
+          // Fifth Section - NFT Slideshow
+          ScrollTrigger.create({
+            trigger: section,
+            start: "top top",
+            end: "+=100%",
+            pin: true,
+            pinSpacing: true,
+            markers: false,
+            anticipatePin: 1
+          });
+
+          // Add zoom out animation for NFT showcase content
+          const timeline = gsap.timeline({
+            scrollTrigger: {
+              trigger: section,
+              start: "top top",
+              end: "+=100%",
+              scrub: 1.5,
+              markers: false
+            }
+          });
+
+          // Target the NFT showcase container
+          timeline.fromTo(section.querySelector('[data-nft-container]'), {
+            scale: 1.5,
+            opacity: 0.5,
+            transformOrigin: "top center",
+          }, {
+            scale: 1,
+            opacity: 1,
+            ease: "power2.inOut"
+          });
         } else {
           // Default pin behavior for other sections
           ScrollTrigger.create({
             trigger: section,
             start: "top top",
-            end: "+=200%",
+            end: "+=100%",
             pin: true,
             pinSpacing: true,
-            markers: true
+            markers: false
           });
         }
       });
-
-      // Infinite slider animation
-      const slider = sliderRef.current;
-      if (slider) {
-        gsap.to(slider.children, {
-          xPercent: -100 * (slider.children.length - 1),
-          ease: "none",
-          scrollTrigger: {
-            trigger: slider,
-            start: "top center",
-            end: "+=3000",
-            scrub: 1,
-            pin: true,
-            markers: true,
-            onUpdate: (self) => {
-              if (self.progress === 1) {
-                gsap.set(slider, { x: 0 });
-              }
-            }
-          }
-        });
-      }
     }, containerRef);
 
     return () => ctx.revert();
   }, []);
-
-  const addToRefs = (el: HTMLElement | null) => {
-    if (el && !sectionsRef.current.includes(el)) {
-      sectionsRef.current.push(el);
-    }
-  };
 
   return (
     <div ref={containerRef} className="relative bg-black">
@@ -281,38 +336,36 @@ export default function Home() {
               priority
             />
           </div>
-          <div 
-            className="artwork-overlay absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px]"
-          >
-            <Image
-              src="/images/Untitled_Artwork.png"
-              alt="Artwork Overlay"
-              fill
-              className="object-contain"
-              priority
-            />
-          </div>
         </div>
       </section>
 
-      {/* Third Section - Roadmap */}
+      {/* Third Section - Artwork reveal */}
+      <section ref={addToRefs} className="relative h-screen w-full">
+        <Image
+          src="/images/backgrounds/cosmic-background.png"
+          alt="Cosmic Background"
+          fill
+          className="object-cover -scale-x-100"
+          priority
+        />
+        <div className="absolute inset-0">
+          <OpeningCrawl />
+        </div>
+      </section>
+
+      {/* Fourth Section - Roadmap */}
       <section ref={addToRefs} className="relative h-screen w-full overflow-hidden bg-black/20">
         {/* Background */}
         <Image
           src="/images/backgrounds/cosmic-background.png"
           alt="Cosmic Background Flipped"
           fill
-          className="object-cover -scale-x-100"
+          className="object-cover rotate-180"
           priority
         />
         
         {/* Roadmap Content Container */}
         <div ref={roadmapRef} className="absolute inset-0 w-full h-full">
-          {/* Debug Container */}
-          <div className="absolute top-4 left-4 z-50 bg-black/50 text-white text-xs p-2">
-            Debug: Roadmap Section
-          </div>
-
           {/* Rocket */}
           <div ref={rocketRef} className="absolute w-[400px] h-[400px] transform -translate-x-1/2 -translate-y-1/2 border border-red-500/50">
             <Image
@@ -415,46 +468,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Fourth Section - 180 degree rotation */}
-      <section ref={addToRefs} className="relative h-screen w-full">
-        <Image
-          src="/images/backgrounds/cosmic-background.png"
-          alt="Cosmic Background Rotated"
-          fill
-          className="object-cover rotate-180"
-          priority
-        />
+      {/* Fifth Section - NFT Slideshow */}
+      <section ref={addToRefs} className="relative min-h-screen">
+        <NftShowcase />
+        <Footer />
       </section>
-
-      {/* Fifth Section - Horizontal flip */}
-      <section ref={addToRefs} className="relative h-screen w-full">
-        <Image
-          src="/images/backgrounds/cosmic-background.png"
-          alt="Cosmic Background Flipped"
-          fill
-          className="object-cover -scale-x-100"
-          priority
-        />
-      </section>
-
-      <Footer />
-
-      {/* NFT Dialog */}
-      {selectedNft && (
-        <div 
-          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-8"
-          onClick={() => setSelectedNft(null)}
-        >
-          <div className="relative w-full max-w-3xl aspect-[3/4]">
-            <Image
-              src={selectedNft}
-              alt="Selected NFT"
-              fill
-              className="object-contain"
-            />
-          </div>
-        </div>
-      )}
     </div>
   );
 }

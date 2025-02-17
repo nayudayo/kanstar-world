@@ -85,12 +85,12 @@ const NftShowcase = () => {
       {/* Header Section */}
       <div className="absolute top-0 left-0 right-0 px-8 py-16">
         <div className="max-w-7xl mx-auto flex items-start justify-between">
-          <h2 className="text-6xl font-bold text-white text-glow-lg mt-16">
+          <h2 className="text-6xl font-bold text-white text-glow-lg">
             HUNDREDS OF UNIQUE<br />
             DIGITAL<br />
             COLLECTIBLES.
           </h2>
-          <p className="text-lg text-gray-300 max-w-md text-glow-sm mt-16">
+          <p className="text-lg text-gray-300 max-w-md text-glow-sm">
             Each KANSTAR NFT is a unique digital masterpiece, crafted from our collection of over 100 hand-painted cosmic elements. These ethereal beings embody our core values of innovation, community, and boundless creativity, making them not just collectibles, but gateways to an extraordinary digital universe.
           </p>
         </div>
@@ -99,8 +99,8 @@ const NftShowcase = () => {
       {/* NFT Carousel Container */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div 
-          ref={sliderRef} 
-          data-nft-container
+          ref={sliderRef}
+          data-nft-slider
           className="relative w-[2400px] h-[400px] flex items-center justify-center translate-y-20"
         >
           {/* Left Side */}

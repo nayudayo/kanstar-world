@@ -8,6 +8,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import NftShowcase from "../components/NftShowcase";
 import OpeningCrawl from "../components/OpeningCrawl";
+import Sidebar from "../components/Sidebar";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -39,7 +40,7 @@ export default function Home() {
     window.scrollTo(0, 0);
     
     const ctx = gsap.context(() => {
-      // Navbar initial animation
+      // Navbar initial animation (fade in only, no scroll behavior)
       gsap.fromTo(navRef.current,
         {
           y: -100,
@@ -54,34 +55,24 @@ export default function Home() {
         }
       );
 
-      // Navbar scroll animation
-      gsap.to(navRef.current, {
-        scrollTrigger: {
-          trigger: sectionsRef.current[1], // Blueprint section
-          start: "top center",
-          end: "center center",
-          scrub: true,
-          onUpdate: (self) => {
-            if (self.direction > 0) {
-              gsap.to(navRef.current, {
-                opacity: 0,
-                y: -50,
-                duration: 0.3
-              });
-            } else if (self.direction < 0) {
-              gsap.to(navRef.current, {
-                opacity: 1,
-                y: 0,
-                duration: 0.3
-              });
-            }
-          }
-        }
-      });
-
       // Create animations for each section
       sectionsRef.current.forEach((section, index) => {
-        if (index === 1) {
+        if (index === 0) {
+          // First section - No scroll trigger, just a simple fade in
+          gsap.fromTo(section.querySelector('.content-container'),
+            {
+              opacity: 0,
+              y: 50
+            },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 1,
+              ease: "power2.out",
+              delay: 1
+            }
+          );
+        } else if (index === 1) {
           // Second Section - Spaceship only
           ScrollTrigger.create({
             trigger: section,
@@ -140,37 +131,28 @@ export default function Home() {
             .to(".spaceship", {
               top: "50%",
               duration: 0.1
+            })
+            // Add diagonal exit movement
+            .to(".spaceship", {
+              top: "120%",
+              left: "-20%",
+              xPercent: -50,
+              yPercent: -50,
+              duration: 0.3,
+              ease: "power1.in"
             });
         } else if (index === 2) {
-          // Third Section - Artwork reveal
-          ScrollTrigger.create({
-            trigger: section,
-            start: "top top",
-            end: "+=200%",
-            pin: true,
-            pinSpacing: true,
-            markers: false
-          });
-
-          const timeline = gsap.timeline({
-            scrollTrigger: {
-              trigger: section,
-              start: "top top",
-              end: "+=200%",
-              scrub: 2,
-              markers: false
-            }
-          });
-
-          timeline
-            .fromTo(".artwork-overlay", {
+          // Third Section - Text Crawl - No scroll trigger, just the crawl animation
+          gsap.fromTo(section.querySelector('.crawl-container'),
+            {
               opacity: 0,
-              scale: 0.8,
-            }, {
+            },
+            {
               opacity: 1,
-              scale: 1,
-              duration: 0.7
-            });
+              duration: 1,
+              ease: "power2.out",
+            }
+          );
         } else if (index === 3) {
           // Fourth Section - Roadmap
           const tl = gsap.timeline({
@@ -236,42 +218,68 @@ export default function Home() {
             .to(y2027Ref.current, { opacity: 1, scale: 1, duration: 1 })
             .to(rocketRef.current, { left: "85%", bottom: "25%", duration: 1 }, "<")
 
-            // 2028 + Final rocket position
+            // 2028 + Final rocket position with extra movement off screen
             .to(y2028Ref.current, { opacity: 1, scale: 1, duration: 1 })
-            .to(rocketRef.current, { left: "95%", bottom: "35%", duration: 1 }, "<");
+            .to(rocketRef.current, { left: "95%", bottom: "35%", duration: 1 }, "<")
+            // Add final movement off screen
+            .to(rocketRef.current, { 
+              left: "120%", 
+              bottom: "120%", 
+              scale: 0.5, 
+              duration: 0.5,
+              ease: "power1.in"
+            });
         } else if (index === 4) {
-          // Fifth Section - NFT Slideshow
-          ScrollTrigger.create({
-            trigger: section,
-            start: "top top",
-            end: "+=100%",
-            pin: true,
-            pinSpacing: true,
-            markers: false,
-            anticipatePin: 1
-          });
-
-          // Add zoom out animation for NFT showcase content
+          // Fifth Section - NFT Slideshow - Fade in on scroll
           const timeline = gsap.timeline({
             scrollTrigger: {
               trigger: section,
-              start: "top top",
-              end: "+=100%",
-              scrub: 1.5,
-              markers: false
+              start: "top center+=20%",
+              end: "top center-=20%",
+              scrub: 0.5,
+              markers: false,
+              toggleActions: "play none none reverse"
             }
           });
 
-          // Target the NFT showcase container
-          timeline.fromTo(section.querySelector('[data-nft-container]'), {
-            scale: 1.5,
-            opacity: 0.5,
-            transformOrigin: "top center",
-          }, {
-            scale: 1,
-            opacity: 1,
-            ease: "power2.inOut"
+          // Initial states
+          gsap.set(section.querySelector('h2'), {
+            opacity: 0,
+            y: 30
           });
+
+          gsap.set(section.querySelector('p'), {
+            opacity: 0,
+            y: 30
+          });
+
+          gsap.set(section.querySelector('[data-nft-slider]'), {
+            opacity: 0,
+            y: 50,
+            scale: 0.95
+          });
+
+          // Animation sequence
+          timeline
+            .to(section.querySelector('h2'), {
+              opacity: 1,
+              y: 0,
+              duration: 0.5,
+              ease: "power2.out"
+            })
+            .to(section.querySelector('p'), {
+              opacity: 1,
+              y: 0,
+              duration: 0.5,
+              ease: "power2.out"
+            }, "-=0.3")
+            .to(section.querySelector('[data-nft-slider]'), {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              duration: 0.5,
+              ease: "power2.out"
+            }, "-=0.3");
         } else {
           // Default pin behavior for other sections
           ScrollTrigger.create({
@@ -292,9 +300,10 @@ export default function Home() {
   return (
     <div ref={containerRef} className="relative bg-black">
       <Navbar ref={navRef} />
+      <Sidebar />
 
       {/* First Section - Original */}
-      <section ref={addToRefs} className="relative h-screen w-full">
+      <section ref={addToRefs} className="relative h-screen w-full pt-[80px]">
         <Image
           src="/images/backgrounds/cosmic-background.png"
           alt="Cosmic Background"
@@ -302,14 +311,17 @@ export default function Home() {
           className="object-cover -scale-x-100"
           priority
         />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="relative w-[700px] h-[700px]">
-            <Image
-              src="/images/Primordial Cell.gif"
-              alt="Primordial Cell"
-              fill
-              className="object-contain"
-              priority
+        <div className="absolute inset-0 flex items-center justify-center content-container">
+          <div className="relative w-[1200px] h-[1200px] absolute top-[90%] left-[32%] transform -translate-x-[50%] -translate-y-[50%]">
+            <img
+              src="/images/planet.gif"
+              alt="Planet"
+              className="w-full h-full object-contain"
+              onError={(e) => {
+                console.error('Error loading planet GIF:', e);
+                // Optionally set a fallback image
+                // e.currentTarget.src = '/images/fallback-planet.png';
+              }}
             />
           </div>
         </div>
@@ -339,7 +351,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Third Section - Artwork reveal */}
+      {/* Third Section - Text Crawl */}
       <section ref={addToRefs} className="relative h-screen w-full">
         <Image
           src="/images/backgrounds/cosmic-background.png"
@@ -348,7 +360,7 @@ export default function Home() {
           className="object-cover -scale-x-100"
           priority
         />
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 crawl-container">
           <OpeningCrawl />
         </div>
       </section>
@@ -367,7 +379,7 @@ export default function Home() {
         {/* Roadmap Content Container */}
         <div ref={roadmapRef} className="absolute inset-0 w-full h-full">
           {/* Rocket */}
-          <div ref={rocketRef} className="absolute w-[400px] h-[400px] transform -translate-x-1/2 -translate-y-1/2 border border-red-500/50">
+          <div ref={rocketRef} className="absolute w-[400px] h-[400px] transform -translate-x-1/2 -translate-y-1/2">
             <Image
               src="/images/roadmap/rocket.png"
               alt="Rocket"
@@ -379,7 +391,7 @@ export default function Home() {
           </div>
 
           {/* 2025 Q1 */}
-          <div ref={q1Ref} className="absolute w-[400px] h-[400px] left-[20%] top-[70%] transform -translate-x-1/2 -translate-y-1/2 border border-blue-500/50">
+          <div ref={q1Ref} className="absolute w-[400px] h-[400px] left-[20%] top-[70%] transform -translate-x-1/2 -translate-y-1/2">
             <Image
               src="/images/roadmap/q1-2025.png"
               alt="Q1 2025"
@@ -470,8 +482,10 @@ export default function Home() {
 
       {/* Fifth Section - NFT Slideshow */}
       <section ref={addToRefs} className="relative min-h-screen">
-        <NftShowcase />
-        <Footer />
+        <div>
+          <NftShowcase />
+          <Footer />
+        </div>
       </section>
     </div>
   );

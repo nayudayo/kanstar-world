@@ -10,11 +10,28 @@ const CrawlContent = () => (
     </div>
     
     <div className="content">
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+      <p>In the distant third cosmic string, the planet Kanstar was invaded by a ruthless alien force.</p>
+      <div className="lore-gif-container">
+        <img src="images/gif/lore/lore-1.gif" alt="Lore 1" className="lore-gif" />
+      </div>
+      
+      <p>Amid the devastation, the Architect, a guardian of ancient secrets, embarks on a quest to revive his lost race.</p>
+      <div className="lore-gif-container">
+        <img src="images/gif/lore/lore-2.gif" alt="Lore 2" className="lore-gif" />
+      </div>
+      
+      <p>His search leads him to the Canis Amber, a relic containing Primordial Cells essential for resurrection. Of the eighteen cells found, only sixteen remain viable.</p>
+      <div className="lore-gif-container">
+        <img src="images/gif/lore/lore-3.gif" alt="Lore 3" className="lore-gif" />
+      </div>
+      
+      <p>Using the Quantum Codex, he launches Project HOPE, placing the cells in Kanstar Capsules to resurrect 4,444 canine souls.</p>
       <br /><br />
-      <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-      <br /><br />
-      <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+      
+      <p>Thus begins the epic saga of the Kanstars</p>
+      <div className="lore-gif-container">
+        <img src="images/gif/lore/lore-4.gif" alt="Lore 4" className="lore-gif" />
+      </div>
     </div>
   </div>
 );

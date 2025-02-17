@@ -1,0 +1,10 @@
+---
+description: prompt engineering for the constraints
+globs: *
+---
+# CONSTRAINTS
+- only alter the files that are relevant to the problem, task, and context scope
+- build upon the current implementation (meaning to utilize existing implementations and build upon that)
+- modify the parts and functions one part at a time so that there will be a reduced risk for errors
+- if linter errors arise, fix them first before marking the task as finished
+- update the .md plan of the task

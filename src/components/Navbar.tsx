@@ -7,10 +7,10 @@ interface NavbarProps {
 
 const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
   return (
-    <nav ref={ref} className="fixed top-0 left-0 w-full z-50 px-8 py-4">
+    <nav ref={ref} className="fixed top-0 left-0 w-full z-[100] px-8 py-4">
       <div className="max-w-7xl mx-auto">
         {/* Blur backdrop with animated gradient border */}
-        <div className="relative backdrop-blur-md bg-black/10 rounded-2xl border border-white/10 overflow-hidden">
+        <div className="relative backdrop-blur-lg bg-black/20 rounded-2xl border border-white/10 overflow-hidden shadow-lg">
           {/* Animated gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 animate-gradient-x"></div>
           

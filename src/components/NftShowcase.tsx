@@ -78,7 +78,7 @@ const NftShowcase = () => {
         src="/images/backgrounds/cosmic-background.png"
         alt="Cosmic Background Flipped"
         fill
-        className="object-cover -scale-x-100"
+        className="object-cover -scale-x-100 -scale-y-100"
         priority
       />
       

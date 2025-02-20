@@ -19,45 +19,42 @@ const NftShowcase = () => {
       newImages.unshift(lastImage);
       setImages(newImages);
 
-      // Animate all cards
-      cardsRef.current.forEach((card, i) => {
-        if (!card) return;
-        
-        const isLeftSide = i < 6;
-        const relativeIndex = isLeftSide ? i : i - 6;
-        
-        if (relativeIndex === 0) {
-          // New cards start at their respective sides
-          gsap.fromTo(card,
-            {
-              [isLeftSide ? 'left' : 'right']: '-13px',
-              scale: 1.2,
-              opacity: 0,
-              zIndex: isLeftSide ? 65 : 60
-            },
-            {
-              [isLeftSide ? 'left' : 'right']: '-13px',
-              scale: 0.9,
-              opacity: 1,
-              duration: 0.75,
-              ease: "power2.inOut"
-            }
-          );
-        } else {
-          // Existing cards shift outward
-          gsap.to(card, {
-            [isLeftSide ? 'left' : 'right']: `${(relativeIndex) * 160 + 60}px`,
-            scale: Math.max(0.6, 0.9 - ((relativeIndex + 1) * 0.06)),
+      // Only animate the main card (index 0)
+      const mainCard = cardsRef.current[0];
+      if (mainCard) {
+        gsap.fromTo(mainCard,
+          {
+            left: 'calc(50% - 175px)',
+            transform: 'translateX(-50%) scale(0.84)',
+            opacity: 0.5,
+            zIndex: 55
+          },
+          {
+            left: 'calc(50% - 13px)',
+            transform: 'translateX(-50%) scale(0.9)',
+            opacity: 1,
             duration: 0.75,
-            ease: "power2.inOut",
-            zIndex: 60 - (relativeIndex * 10)
+            ease: "power3.out",
+            zIndex: 65
+          }
+        );
+      }
+
+      // Update right preview cards positions without animation
+      [1, 2].forEach((i) => {
+        const card = cardsRef.current[i];
+        if (card) {
+          gsap.set(card, {
+            left: `calc(50% + ${160 + ((i - 1) * 160)}px)`,
+            transform: `translateX(-50%) scale(${Math.max(0.6, 0.9 - ((i + 1) * 0.06))})`,
+            zIndex: 60 - (i * 10)
           });
         }
       });
     };
 
     if (isAutoPlaying) {
-      interval = setInterval(animateCards, 1000);
+      interval = setInterval(animateCards, 2000);
     }
 
     return () => clearInterval(interval);
@@ -83,7 +80,7 @@ const NftShowcase = () => {
       />
       
       {/* Header Section */}
-      <div className="absolute top-0 left-0 right-0 px-8 py-16">
+      <div className="absolute top-10 left-0 right-0 px-8 py-16">
         <div className="max-w-7xl mx-auto flex items-start justify-between">
           <h2 className="text-6xl font-bold text-white text-glow-lg">
             HUNDREDS OF UNIQUE<br />
@@ -101,76 +98,93 @@ const NftShowcase = () => {
         <div 
           ref={sliderRef}
           data-nft-slider
-          className="relative w-[2400px] h-[400px] flex items-center justify-center translate-y-20"
+          className="relative w-[800px] h-[400px] flex items-center justify-center translate-y-20"
         >
-          {/* Left Side */}
-          <div className="relative h-[400px] flex items-center">
-            {[...Array(6)].map((_, i) => {
-              const xOffset = i === 0 ? -15: (i * 160 + 60);
-              const scale = Math.max(0.6, 0.9 - (i * 0.06));
-              const zIndex = i === 0 ? 65 : (60 - (i * 10));
-              const imageIndex = i < images.length ? images[i] : 1;
+          {/* Single Sequence of Cards */}
+          <div className="relative h-[400px] flex items-center justify-center mt-[250px]">
+            {/* Preview Cards - Left Side */}
+            {[1, 0].map((offset) => {
+              const xOffset = -175 - (offset * 160);
+              const scale = Math.max(0.6, 0.9 - ((offset + 1) * 0.06));
+              const zIndex = 55 - (offset * 10);
+              const imageIndex = images[images.length - 1 - offset] || images[0];
               
               return (
                 <div
-                  key={`left-${i}`}
-                  ref={(el) => setCardRef(el, i)}
+                  key={`preview-left-${offset}`}
                   className="absolute w-[280px] aspect-[3/4] rounded-[30px] overflow-hidden shadow-2xl cursor-pointer"
                   style={{
-                    left: `${xOffset}px`,
-                    transform: `translateX(0) scale(${scale})`,
-                    opacity: 1,
+                    left: `calc(50% + ${xOffset}px)`,
+                    transform: `translateX(-50%) scale(${scale})`,
+                    opacity: 0.5,
                     zIndex,
                   }}
                   onClick={() => handleCardClick()}
                 >
                   <Image
                     src={`/images/nft/nft${imageIndex}.png`}
-                    alt={`NFT ${imageIndex}`}
+                    alt={`Preview NFT ${offset + 1}`}
                     fill
                     className="object-cover"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedNft(`/images/nft/nft${imageIndex}.png`);
-                    }}
                     priority
                   />
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20" />
                 </div>
               );
             })}
-          </div>
 
-          {/* Right Side */}
-          <div className="relative h-[400px] flex items-center">
-            {[...Array(6)].map((_, i) => {
-              const xOffset = i === 0 ? -15: (i * 160 + 60);
-              const scale = Math.max(0.6, 0.9 - (i * 0.06));
-              const zIndex = i === 0 ? 60 : (60 - (i * 10));
-              const imageIndex = i + 6 < images.length ? images[i + 6] : 1;
+            {/* Main Card */}
+            <div
+              key="card-main"
+              ref={(el) => setCardRef(el, 0)}
+              className="absolute w-[280px] aspect-[3/4] rounded-[30px] overflow-hidden shadow-2xl cursor-pointer"
+              style={{
+                left: 'calc(50% - 13px)',
+                transform: `translateX(-50%) scale(0.9)`,
+                opacity: 1,
+                zIndex: 65,
+              }}
+              onClick={() => handleCardClick()}
+            >
+              <Image
+                src={`/images/nft/nft${images[0]}.png`}
+                alt="Current NFT"
+                fill
+                className="object-cover"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedNft(`/images/nft/nft${images[0]}.png`);
+                }}
+                priority
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20" />
+            </div>
+
+            {/* Preview Cards - Right Side */}
+            {[0, 1].map((offset) => {
+              const xOffset = 160 + (offset * 160);
+              const scale = Math.max(0.6, 0.9 - ((offset + 1) * 0.06));
+              const zIndex = 55 - (offset * 10);
+              const imageIndex = images[offset + 1] || images[0];
               
               return (
                 <div
-                  key={`right-${i}`}
-                  ref={(el) => setCardRef(el, i + 6)}
+                  key={`preview-right-${offset}`}
+                  ref={(el) => setCardRef(el, offset + 1)}
                   className="absolute w-[280px] aspect-[3/4] rounded-[30px] overflow-hidden shadow-2xl cursor-pointer"
                   style={{
-                    right: `${xOffset}px`,
-                    transform: `translateX(0) scale(${scale})`,
-                    opacity: 1,
+                    left: `calc(50% + ${xOffset}px)`,
+                    transform: `translateX(-50%) scale(${scale})`,
+                    opacity: 0.5,
                     zIndex,
                   }}
                   onClick={() => handleCardClick()}
                 >
                   <Image
                     src={`/images/nft/nft${imageIndex}.png`}
-                    alt={`NFT ${imageIndex}`}
+                    alt={`Next NFT ${offset + 1}`}
                     fill
                     className="object-cover"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedNft(`/images/nft/nft${imageIndex}.png`);
-                    }}
                     priority
                   />
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20" />

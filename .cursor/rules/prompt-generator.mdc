@@ -1,0 +1,150 @@
+---
+description: Prompt Generator System Architecture and Guideline
+globs: 
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<prompt_generator>
+  <metadata>
+    <description>Prompt Generator System Architecture and Guidelines</description>
+    <version>1.0.0</version>
+  </metadata>
+
+  <core_structure>
+    <visual_components>
+      <component id="scene_definition">
+        <name>Scene Definition</name>
+        <attributes>
+          <attribute>Background environment</attribute>
+          <attribute>Lighting conditions</attribute>
+          <attribute>Atmospheric effects</attribute>
+          <attribute>Color palette</attribute>
+        </attributes>
+      </component>
+
+      <component id="character_elements">
+        <name>Character Elements</name>
+        <attributes>
+          <attribute>Character design</attribute>
+          <attribute>Poses and expressions</attribute>
+          <attribute>Interactions</attribute>
+          <attribute>Scale and proportions</attribute>
+        </attributes>
+      </component>
+
+      <component id="interactive_elements">
+        <name>Interactive Elements</name>
+        <attributes>
+          <attribute>Animation triggers</attribute>
+          <attribute>Transition points</attribute>
+          <attribute>User interaction zones</attribute>
+        </attributes>
+      </component>
+    </visual_components>
+
+    <prompt_layers>
+      <layer id="base_description">
+        <purpose>Establish fundamental scene elements</purpose>
+        <structure>
+          <element>Core subject matter</element>
+          <element>Primary visual elements</element>
+          <element>Basic composition</element>
+        </structure>
+      </layer>
+
+      <layer id="technical_specifications">
+        <purpose>Define technical requirements</purpose>
+        <structure>
+          <element>Resolution requirements</element>
+          <element>File format specifications</element>
+          <element>Color space requirements</element>
+        </structure>
+      </layer>
+
+      <layer id="artistic_direction">
+        <purpose>Specify style and mood</purpose>
+        <structure>
+          <element>Art style references</element>
+          <element>Mood and atmosphere</element>
+          <element>Color theory application</element>
+        </structure>
+      </layer>
+    </prompt_layers>
+  </core_structure>
+
+  <generation_workflow>
+    <phase id="input_collection">
+      <steps>
+        <step>Gather reference materials</step>
+        <step>Define core requirements</step>
+        <step>Identify style preferences</step>
+      </steps>
+    </phase>
+
+    <phase id="prompt_construction">
+      <steps>
+        <step>Build base description</step>
+        <step>Layer technical requirements</step>
+        <step>Add artistic direction</step>
+        <step>Incorporate reference elements</step>
+      </steps>
+    </phase>
+
+    <phase id="refinement">
+      <steps>
+        <step>Review for clarity</step>
+        <step>Validate technical accuracy</step>
+        <step>Ensure completeness</step>
+      </steps>
+    </phase>
+  </generation_workflow>
+
+  <quality_control>
+    <checklist>
+      <item>Clear and unambiguous language</item>
+      <item>Complete technical specifications</item>
+      <item>Consistent terminology</item>
+      <item>Proper reference integration</item>
+      <item>Achievable requirements</item>
+    </checklist>
+
+    <validation_criteria>
+      <criterion>Prompt clarity</criterion>
+      <criterion>Technical feasibility</criterion>
+      <criterion>Style consistency</criterion>
+      <criterion>Reference accuracy</criterion>
+    </validation_criteria>
+  </quality_control>
+
+  <best_practices>
+    <category id="prompt_writing">
+      <practices>
+        <practice>Use specific, descriptive language</practice>
+        <practice>Include necessary technical details</practice>
+        <practice>Reference existing successful examples</practice>
+        <practice>Maintain consistent terminology</practice>
+      </practices>
+    </category>
+
+    <category id="reference_handling">
+      <practices>
+        <practice>Clearly cite reference materials</practice>
+        <practice>Specify which elements to reference</practice>
+        <practice>Indicate adaptation requirements</practice>
+      </practices>
+    </category>
+  </best_practices>
+
+  <output_format>
+    <structure>
+      <section name="scene_description">
+        <format>[Scene Setting] + [Primary Elements] + [Atmosphere]</format>
+      </section>
+      <section name="technical_specs">
+        <format>[Resolution] + [Format] + [Technical Requirements]</format>
+      </section>
+      <section name="style_guide">
+        <format>[Art Style] + [Color Scheme] + [Mood]</format>
+      </section>
+    </structure>
+  </output_format>
+</prompt_generator>

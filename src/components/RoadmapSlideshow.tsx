@@ -77,7 +77,7 @@ const RoadmapSlideshow = () => {
         {/* Left side - Slideshow Container */}
         <div className="flex flex-col items-center relative">
           {/* Hero Text - Centered above slideshow */}
-          <h2 className="text-8xl font-bold text-white tracking-[0.2em] roadmap-title-glow absolute -top-28 left-1/2 -translate-x-1/2 whitespace-nowrap">
+          <h2 className="text-8xl font-bold text-white tracking-[0.2em] roadmap-title-glow absolute -top-20 left-1/2 -translate-x-1/2 whitespace-nowrap">
             ROADMAP
           </h2>
 

@@ -1,74 +1,66 @@
 "use client";
 
 import Image from "next/image";
-import { useLayoutEffect, useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import NftShowcase from "../components/NftShowcase";
-import LoreSection from "../components/LoreSection";
 import RoadmapSlideshow from "../components/RoadmapSlideshow";
 import Sidebar from "../components/Sidebar";
+import LoadingScreen from "../components/LoadingScreen";
+import OptimizedVideo from "../components/OptimizedVideo";
+import { ASSET_MANIFEST } from "../config/assets";
+import { usePerformanceMonitoring } from "../hooks/usePerformanceMonitoring";
+import { scrollOptimizer } from "../utils/scrollOptimization";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Asset preloader for large GIFs
-const preloadImage = (src: string): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    const img = new window.Image();
-    img.onload = () => resolve();
-    img.onerror = reject;
-    img.src = src;
-  });
-};
-
-// Progressive loading queue
-class LoadingQueue {
-  private queue: string[] = [];
-  private loading = false;
-
-  add(src: string) {
-    if (!this.queue.includes(src)) {
-      this.queue.push(src);
-      this.processQueue();
-    }
-  }
-
-  private async processQueue() {
-    if (this.loading || this.queue.length === 0) return;
-    this.loading = true;
-    
-    const src = this.queue[0];
-    try {
-      await preloadImage(src);
-      this.queue.shift();
-    } catch (error) {
-      console.error('Error loading image:', error);
-    }
-    
-    this.loading = false;
-    this.processQueue();
-  }
-}
-
-const loadingQueue = new LoadingQueue();
-
-// Asset paths
-const ASSETS = {
-  PLANET_GIF: '/images/Primordial Cell.gif',
-  HEROES: '/images/assets/kanstar-heroes.png',
-  SHIP: '/images/assets/ship/ship.png',
-  BACKGROUND: '/images/backgrounds/cosmic-background.png',
-  // Add other large assets here
-};
-
 export default function Home() {
-  const [assetsLoaded, setAssetsLoaded] = useState<Record<string, boolean>>({});
-  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
   const sectionsRef = useRef<HTMLElement[]>([]);
   const navRef = useRef<HTMLElement>(null);
+
+  // Initialize performance monitoring
+  usePerformanceMonitoring({
+    onPerformanceIssue: (metric, value) => {
+      console.warn(`Performance issue detected - ${metric}: ${value}`);
+    }
+  });
+
+  // Initialize scroll optimization
+  useEffect(() => {
+    scrollOptimizer.configure({
+      debounceDelay: 100,
+      throttleDelay: 16,
+      disableOnLowFPS: true,
+      fpsThreshold: 45
+    });
+    scrollOptimizer.startOptimizing();
+
+    return () => {
+      scrollOptimizer.stopOptimizing();
+    };
+  }, []);
+
+  // Initialize GSAP
+  useEffect(() => {
+    if (!isLoading) {
+      // Small delay to ensure DOM is ready
+      const timer = setTimeout(() => {
+        initializeAnimations();
+      }, 100);
+
+      return () => {
+        clearTimeout(timer);
+        // Cleanup GSAP animations
+        ScrollTrigger.getAll().forEach(st => st.kill());
+        gsap.globalTimeline.clear();
+      };
+    }
+  }, [isLoading]);
 
   const addToRefs = (el: HTMLElement | null) => {
     if (el && !sectionsRef.current.includes(el)) {
@@ -76,46 +68,26 @@ export default function Home() {
     }
   };
 
-  // Preload essential assets
-  useEffect(() => {
-    const preloadAssets = async () => {
-      const totalAssets = Object.keys(ASSETS).length;
-      let loadedCount = 0;
+  const handleLoadComplete = () => {
+    setIsLoading(false);
+    // Initialize GSAP animations after loading is complete
+    initializeAnimations();
+  };
 
-      const updateProgress = () => {
-        loadedCount++;
-        setLoadingProgress((loadedCount / totalAssets) * 100);
-      };
+  // Initialize all GSAP animations
+  const initializeAnimations = () => {
+    if (!containerRef.current) return;
 
-      // Start with the most important assets
-      try {
-        await preloadImage(ASSETS.BACKGROUND);
-        updateProgress();
-        setAssetsLoaded(prev => ({ ...prev, [ASSETS.BACKGROUND]: true }));
-
-        // Load other assets progressively
-        for (const [key, src] of Object.entries(ASSETS)) {
-          if (key === 'BACKGROUND') continue;
-          loadingQueue.add(src);
-          await preloadImage(src);
-          updateProgress();
-          setAssetsLoaded(prev => ({ ...prev, [src]: true }));
-        }
-      } catch (error) {
-        console.error('Error preloading assets:', error);
-      }
-    };
-
-    preloadAssets();
-  }, []);
-
-  useLayoutEffect(() => {
-    // Force scroll to top on mount
+    // Force scroll to top
     window.scrollTo(0, 0);
     
+    // Clear any existing ScrollTriggers
+    ScrollTrigger.getAll().forEach(st => st.kill());
+    
     const ctx = gsap.context(() => {
-      // Navbar initial animation (fade in only, no scroll behavior)
-      gsap.fromTo(navRef.current,
+      // Navbar animation
+      const navTimeline = gsap.timeline();
+      navTimeline.fromTo(navRef.current,
         {
           y: -100,
           opacity: 0
@@ -128,12 +100,14 @@ export default function Home() {
           delay: 0.5
         }
       );
+      scrollOptimizer.optimizeTimeline(navTimeline);
 
       // Create animations for each section
       sectionsRef.current.forEach((section, index) => {
         if (index === 0) {
           // First Section - Landing Page
-          gsap.fromTo(section.querySelector('.content-container'),
+          const landingTimeline = gsap.timeline();
+          landingTimeline.fromTo(section.querySelector('.content-container'),
             {
               opacity: 0,
               y: 50
@@ -146,82 +120,221 @@ export default function Home() {
               delay: 1
             }
           );
+          scrollOptimizer.optimizeTimeline(landingTimeline);
         } else if (index === 1) {
           // Second Section - Heroes Animation
-          ScrollTrigger.create({
-            trigger: section,
-            start: "top top",
-            end: "+=150%",
-            pin: true,
-            pinSpacing: true,
-            anticipatePin: 1,
-            markers: false
-          });
-
-          const timeline = gsap.timeline({
+          const heroesTimeline = gsap.timeline({
             scrollTrigger: {
               trigger: section,
-              start: "top top",
-              end: "+=150%",
-              scrub: 1.5,
-              markers: false,
-              anticipatePin: 1
+              start: "top center",
+              toggleActions: "play none none none",
+              markers: false
             }
           });
 
-          // Simple scale-up animation
-          timeline
-            .fromTo(".heroes-container", 
+          // Heroes animation sequence - One smooth motion
+          heroesTimeline
+            .fromTo(section.querySelector('.heroes-container'), 
               {
                 opacity: 0,
-                scale: 0.001,
-                filter: 'blur(20px)',
+                scale: 0.5,
+                filter: 'blur(15px)',
+                y: 50,
                 transformOrigin: "center center"
               }, 
               {
-                opacity: 0.3,
-                scale: 0.3,
-                filter: 'blur(10px)',
-                duration: 0.3,
-                ease: "power2.in"
+                opacity: 1,
+                scale: 1,
+                filter: 'blur(0px)',
+                y: 0,
+                duration: 1.5,
+                ease: "power3.out"
               }
             )
-            .to(".heroes-container", {
-              opacity: 0.6,
-              scale: 0.6,
-              filter: 'blur(5px)',
-              duration: 0.3,
-              ease: "power2.inOut"
-            })
-            .to(".heroes-container", {
-              opacity: 1,
-              scale: 1,
-              filter: 'blur(0px)',
-              duration: 0.4,
-              ease: "power2.out"
-            })
-            .to(".heroes-container", {
-              scale: 1.05,
-              duration: 0.2,
+            .to(section.querySelector('.heroes-container'), {
+              scale: 1.02,
+              duration: 1,
               ease: "power1.inOut",
               yoyo: true,
               repeat: 1
             });
+
+          scrollOptimizer.optimizeTimeline(heroesTimeline);
         } else if (index === 2) {
-          // Third Section - Lore Section
-          gsap.fromTo(section.querySelector('.crawl-container'),
-            {
-              opacity: 0,
-            },
-            {
-              opacity: 1,
-              duration: 1,
-              ease: "power2.out",
+          // Third Section - Lore Section with individual animations
+          const lorePin = ScrollTrigger.create({
+            trigger: section,
+            start: "top top",
+            end: "+=300%",
+            pin: true,
+            pinSpacing: true,
+            anticipatePin: 1,
+            markers: true,
+            onEnter: () => {
+              console.log("Lore section entered");
+              lorePin.refresh();
             }
-          );
+          });
+
+          // Story telling animation - One smooth continuous motion
+          const storyTellingTimeline = gsap.timeline({
+            scrollTrigger: {
+              trigger: section,
+              start: "top center",
+              toggleActions: "play none none none",
+              scrub: false
+            }
+          });
+
+          storyTellingTimeline
+            .fromTo(".story-telling-container",
+              {
+                opacity: 0,
+                scale: 0.8,
+                y: 50,
+                filter: 'blur(10px)'
+              },
+              {
+                opacity: 1,
+                scale: 1,
+                y: 0,
+                filter: 'blur(0px)',
+                duration: 1.5,
+                ease: "power3.out"
+              }
+            );
+
+          // Single timeline for all lore items in sequence
+          const loreTimeline = gsap.timeline({
+            scrollTrigger: {
+              trigger: section,
+              start: "top top",
+              end: "+=300%",
+              scrub: 1,
+              snap: {
+                snapTo: "labels",
+                duration: { min: 0.2, max: 0.4 },
+                ease: "power1.inOut"
+              }
+            }
+          });
+
+          // First Lore Item
+          loreTimeline
+            .fromTo(".lore-section-1 .lore-item-group",
+              {
+                yPercent: 150,
+                opacity: 0,
+                scale: 0.8
+              },
+              {
+                yPercent: -50,
+                opacity: 1,
+                scale: 1,
+                duration: 0.4
+              }
+            )
+            .fromTo(".lore-section-1 .lore-text-frame",
+              {
+                opacity: 0,
+                x: 50
+              },
+              {
+                opacity: 1,
+                x: 0,
+                duration: 0.3
+              },
+              "-=0.2"
+            )
+            .addLabel("lore1-stay")
+            .to(".lore-section-1 .lore-item-group", {
+              yPercent: -100,
+              opacity: 0,
+              scale: 0.8,
+              duration: 0.4
+            }, "+=0.5")
+            .to(".lore-section-1 .lore-text-frame", {
+              opacity: 0,
+              x: -50,
+              duration: 0.3
+            }, "<")
+            .addLabel("lore1-end")
+
+            // Second Lore Item
+            .fromTo(".lore-section-2 .lore-item-group",
+              {
+                yPercent: 150,
+                opacity: 0,
+                scale: 0.8
+              },
+              {
+                yPercent: -50,
+                opacity: 1,
+                scale: 1,
+                duration: 0.4
+              }
+            )
+            .fromTo(".lore-section-2 .lore-text-frame",
+              {
+                opacity: 0,
+                x: 50
+              },
+              {
+                opacity: 1,
+                x: 0,
+                duration: 0.3
+              },
+              "-=0.2"
+            )
+            .addLabel("lore2-stay")
+            .to(".lore-section-2 .lore-item-group", {
+              yPercent: -100,
+              opacity: 0,
+              scale: 0.8,
+              duration: 0.4
+            }, "+=0.5")
+            .to(".lore-section-2 .lore-text-frame", {
+              opacity: 0,
+              x: -50,
+              duration: 0.3
+            }, "<")
+            .addLabel("lore2-end")
+
+            // Third Lore Item
+            .fromTo(".lore-section-3 .lore-item-group",
+              {
+                yPercent: 150,
+                opacity: 0,
+                scale: 0.8
+              },
+              {
+                yPercent: -50,
+                opacity: 1,
+                scale: 1,
+                duration: 0.4
+              }
+            )
+            .fromTo(".lore-section-3 .lore-text-frame",
+              {
+                opacity: 0,
+                x: 50
+              },
+              {
+                opacity: 1,
+                x: 0,
+                duration: 0.3
+              },
+              "-=0.2"
+            )
+            .addLabel("lore3-stay");
+
+          // Optimize timelines
+          [storyTellingTimeline, loreTimeline].forEach(timeline => {
+            scrollOptimizer.optimizeTimeline(timeline);
+          });
         } else if (index === 5) {
           // Sixth Section - NFT Showcase
-          const timeline = gsap.timeline({
+          const nftTimeline = gsap.timeline({
             scrollTrigger: {
               trigger: section,
               start: "top center+=20%",
@@ -250,7 +363,7 @@ export default function Home() {
           });
 
           // Animation sequence
-          timeline
+          nftTimeline
             .to(section.querySelector('h2'), {
               opacity: 1,
               y: 0,
@@ -270,6 +383,7 @@ export default function Home() {
               duration: 0.5,
               ease: "power2.out"
             }, "-=0.3");
+          scrollOptimizer.optimizeTimeline(nftTimeline);
         } else if (index !== 3 && index !== 4) { // Skip pin behavior for roadmap (3) and token (4) sections
           // Default pin behavior for other sections
           ScrollTrigger.create({
@@ -285,7 +399,12 @@ export default function Home() {
     }, containerRef);
 
     return () => ctx.revert();
-  }, []);
+  };
+
+  // If still loading, show loading screen
+  if (isLoading) {
+    return <LoadingScreen onLoadComplete={handleLoadComplete} />;
+  }
 
   return (
     <div ref={containerRef} className="relative bg-black">
@@ -295,7 +414,7 @@ export default function Home() {
       {/* First Section - Landing Page */}
       <section ref={addToRefs} className="relative h-screen w-full pt-[80px]">
         <Image
-          src={ASSETS.BACKGROUND}
+          src={ASSET_MANIFEST.CRITICAL.BACKGROUND}
           alt="Cosmic Background"
           fill
           className="object-cover -scale-x-100 z-[1]"
@@ -304,49 +423,36 @@ export default function Home() {
         
         {/* Title Overlay */}
         <div className="absolute inset-0 flex items-center z-[2]">
-          <div className="relative w-full bg-white/20 backdrop-blur-sm py-12 border-y border-white/10 overflow-visible">
-            <div className="max-w-7xl mx-auto px-8 relative">
+          <div className="content-container relative w-full bg-white/20 backdrop-blur-sm py-8 md:py-12 border-y border-white/10 overflow-visible">
+            <div className="max-w-7xl mx-auto px-4 md:px-8 relative">
               {/* Planet Container - Positioned absolutely relative to the content container */}
               <div className="absolute left-[20%] top-[50%] -translate-x-1/2 -translate-y-1/2">
-                <div className="relative w-[1100px] h-[1100px]">
-                  {!assetsLoaded[ASSETS.PLANET_GIF] ? (
-                    // Loading placeholder with progress
-                    <div className="w-full h-full flex items-center justify-center bg-black/20 backdrop-blur-sm rounded-full">
-                      <div className="text-center">
-                        <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-                        <div className="text-white text-lg">Loading Asset...</div>
-                        <div className="text-blue-400 text-sm">{Math.round(loadingProgress)}%</div>
-                      </div>
-                    </div>
-                  ) : (
-                    <img
-                      src={ASSETS.PLANET_GIF}
-                      alt="Planet"
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        console.error('Error loading planet GIF:', e);
-                        e.currentTarget.src = '/images/fallback-planet.png';
-                      }}
-                    />
-                  )}
+                <div className="relative w-[600px] md:w-[800px] lg:w-[1000px] h-[600px] md:h-[800px] lg:h-[1000px]">
+                  <Image
+                    src={ASSET_MANIFEST.VIDEOS.PLANET.fallback}
+                    alt={ASSET_MANIFEST.VIDEOS.PLANET.alt}
+                    fill
+                    className="object-contain"
+                    priority
+                  />
                 </div>
               </div>
 
               {/* Title Content */}
-              <div className="text-right">
-                <h1 className="text-white text-8xl font-bold tracking-[0.2em] title-glow">
+              <div className="text-right relative z-10">
+                <h1 className="text-white text-5xl md:text-6xl lg:text-8xl font-bold tracking-[0.2em] title-glow">
                   KANSTAR<br />WORLD
                 </h1>
-                <p className="text-[#FFD700] text-2xl mt-6 tracking-[0.3em] subtitle-glow">
+                <p className="text-[#FFD700] text-lg md:text-xl lg:text-2xl mt-4 md:mt-6 tracking-[0.3em] subtitle-glow">
                   THE ULTIMATE COSMIC DOGGO
                 </p>
               </div>
             </div>
 
             {/* Collection Button - Aligned with subtitle text */}
-            <div className="absolute max-w-7xl w-full right-0 left-0 mx-auto px-8">
+            <div className="absolute max-w-7xl w-full right-0 left-0 mx-auto px-4 md:px-8">
               <div className="flex justify-end">
-                <button className="px-12 py-3 backdrop-blur-md bg-black/30 text-white hover:bg-black/40 transition-all duration-300 tracking-[0.2em] font-medium border-[2px] border-white collection-button-glow text-lg z-[3] translate-y-24">
+                <button className="px-8 md:px-12 py-2 md:py-3 backdrop-blur-md bg-black/30 text-white hover:bg-black/40 transition-all duration-300 tracking-[0.2em] font-medium border-[2px] border-white collection-button-glow text-base md:text-lg z-[3] translate-y-16 md:translate-y-24">
                   CHECK COLLECTION
                 </button>
               </div>
@@ -358,16 +464,16 @@ export default function Home() {
       {/* Second Section - Heroes Animation */}
       <section id="heroes" ref={addToRefs} className="relative h-screen w-full overflow-hidden">
         <Image
-          src="/images/backgrounds/cosmic-background.png"
-          alt="Cosmic Background Rotated"
+          src={ASSET_MANIFEST.CRITICAL.BACKGROUND}
+          alt="Cosmic Background"
           fill
           className="object-cover rotate-180"
           priority
         />
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="heroes-container relative w-[1300px] h-[600px] opacity-0 scale-[0.01]">
+          <div className="heroes-container relative w-[1300px] h-[600px]">
             <Image
-              src={ASSETS.HEROES}
+              src={ASSET_MANIFEST.IMAGES.HEROES}
               alt="Kanstar Heroes"
               fill
               className="object-contain"
@@ -380,14 +486,71 @@ export default function Home() {
       {/* Third Section - Lore Section */}
       <section id="lore" ref={addToRefs} className="relative h-screen w-full">
         <Image
-          src="/images/backgrounds/cosmic-background.png"
+          src={ASSET_MANIFEST.CRITICAL.BACKGROUND}
           alt="Cosmic Background"
           fill
           className="object-cover -scale-x-100"
           priority
         />
         <div className="absolute inset-0">
-          <LoreSection />
+          <div className="relative w-full h-full flex items-center justify-center">
+            {/* Story Telling Container - Left Side */}
+            <div className="story-telling-container absolute left-[25%] top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] flex items-center justify-center z-20">
+              <OptimizedVideo
+                webm={ASSET_MANIFEST.VIDEOS.LORE_STORYTELLING.webm}
+                mp4={ASSET_MANIFEST.VIDEOS.LORE_STORYTELLING.mp4}
+                fallbackImage={ASSET_MANIFEST.VIDEOS.LORE_STORYTELLING.fallback}
+                alt={ASSET_MANIFEST.VIDEOS.LORE_STORYTELLING.alt}
+                className="object-contain"
+              />
+            </div>
+
+            {/* Lore Items Container - Right Side */}
+            <div className="relative w-[600px] h-[600px] ml-auto mr-[20%]">
+              {[1, 2, 3].map((num) => {
+                const videoKey = `LORE_${num}` as keyof typeof ASSET_MANIFEST.VIDEOS;
+                return (
+                  <div 
+                    key={num}
+                    className={`lore-section-${num} absolute w-full h-full`}
+                  >
+                    <div 
+                      className="lore-item-group absolute w-full h-[400px]"
+                      style={{
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        zIndex: 10 - num,
+                        transformStyle: 'preserve-3d',
+                        opacity: 0
+                      }}
+                    >
+                      <div className="lore-item relative w-full h-full">
+                        <OptimizedVideo
+                          webm={ASSET_MANIFEST.VIDEOS[videoKey].webm}
+                          mp4={ASSET_MANIFEST.VIDEOS[videoKey].mp4}
+                          fallbackImage={ASSET_MANIFEST.VIDEOS[videoKey].fallback}
+                          alt={ASSET_MANIFEST.VIDEOS[videoKey].alt}
+                          className="object-contain"
+                        />
+                      </div>
+                      <div 
+                        className="lore-text-frame absolute left-[90%] top-1/2 -translate-y-1/2 w-[300px] backdrop-blur-md bg-black/30 p-6 rounded-lg border border-white/10"
+                        style={{ zIndex: 20, opacity: 0 }}
+                      >
+                        <h3 className="text-white text-2xl font-bold mb-4 tracking-wider text-glow-sm">Chapter {num}</h3>
+                        <p className="text-white/90 text-lg leading-relaxed">
+                          {num === 1 && "In the vast expanse of the cosmos, the Kanstar emerged as guardians of the celestial realms..."}
+                          {num === 2 && "As their power grew, they discovered ancient artifacts that would shape their destiny..."}
+                          {num === 3 && "United in purpose, the Kanstar now protect the balance of the cosmic forces..."}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -414,31 +577,40 @@ export default function Home() {
           className="object-cover -scale-x-100"
           priority
         />
+        {/* Top Debris */}
+        <div className="absolute top-0 left-0 w-full h-[800px] -mt-[400px]">
+          <Image
+            src={ASSET_MANIFEST.IMAGES.DEBRIS}
+            alt="Space Debris Top"
+            fill
+            className="object-contain"
+          />
+        </div>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           {/* Token Purchase Container */}
           <div className="flex items-center justify-between w-full max-w-[1920px] px-20">
             {/* Left Kanstar Container */}
             <div className="relative w-[800px] h-[800px] token-container">
               <div className="absolute inset-0 token-shadow">
-                <Image
-                  src="/images/token-section/token.GIF"
-                  alt="Kanstar Token Left"
-                  fill
+                <OptimizedVideo
+                  webm={ASSET_MANIFEST.VIDEOS.TOKEN.webm}
+                  mp4={ASSET_MANIFEST.VIDEOS.TOKEN.mp4}
+                  fallbackImage={ASSET_MANIFEST.VIDEOS.TOKEN.fallback}
+                  alt={ASSET_MANIFEST.VIDEOS.TOKEN.alt}
                   className="object-contain"
-                  priority
                 />
               </div>
             </div>
 
             {/* Center Text */}
             <div className="flex flex-col items-center gap-8 mx-10">
-              <h2 className="text-white text-8xl font-bold tracking-[0.2em] title-glow text-center">
+              <h2 className="text-white text-6xl font-bold tracking-[0.2em] title-glow text-center">
                 PURCHASE
               </h2>
-              <div className="text-[#FFA500] text-9xl font-bold tracking-[0.2em] token-glow text-center">
+              <div className="text-[#FFA500] text-7xl font-bold tracking-[0.2em] token-glow text-center">
                 $KANSTAR
               </div>
-              <h2 className="text-white text-8xl font-bold tracking-[0.2em] title-glow text-center">
+              <h2 className="text-white text-6xl font-bold tracking-[0.2em] title-glow text-center">
                 TOKEN
               </h2>
             </div>
@@ -446,29 +618,38 @@ export default function Home() {
             {/* Right Kanstar Container */}
             <div className="relative w-[800px] h-[800px] token-container">
               <div className="absolute inset-0 token-shadow">
-                <Image
-                  src="/images/token-section/token.GIF"
-                  alt="Kanstar Token Right"
-                  fill
+                <OptimizedVideo
+                  webm={ASSET_MANIFEST.VIDEOS.TOKEN.webm}
+                  mp4={ASSET_MANIFEST.VIDEOS.TOKEN.mp4}
+                  fallbackImage={ASSET_MANIFEST.VIDEOS.TOKEN.fallback}
+                  alt={ASSET_MANIFEST.VIDEOS.TOKEN.alt}
                   className="object-contain -scale-x-100"
-                  priority
                 />
               </div>
             </div>
           </div>
         </div>
+        {/* Bottom Debris */}
+        <div className="absolute -bottom-[400px] left-0 w-full h-[800px] z-[100]">
+          <Image
+            src={ASSET_MANIFEST.IMAGES.DEBRIS}
+            alt="Space Debris Bottom"
+            fill
+            className="object-contain rotate-180"
+          />
+        </div>
       </section>
 
       {/* Sixth Section - NFT Showcase */}
-      <section id="nft" ref={addToRefs} className="relative min-h-screen">
+      <section id="nft" ref={addToRefs} className="relative min-h-screen ">
         <Image
           src="/images/backgrounds/cosmic-background.png"
           alt="Cosmic Background"
           fill
-          className="object-cover -scale-y-100"
+          className="object-cover -scale-y-100 -z-[1]"
           priority
         />
-        <div>
+        <div className="relative z-[20]">
           <NftShowcase />
           <Footer />
         </div>
@@ -506,6 +687,45 @@ export default function Home() {
                      0 0 30px rgba(0, 255, 255, 0.3),
                      inset 0 0 15px rgba(0, 255, 255, 0.3);
           text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+        .lore-scroll-container {
+          transform-style: preserve-3d;
+          perspective: 1000px;
+          position: relative;
+          height: 100%;
+          width: 100%;
+          overflow: visible;
+        }
+        .lore-item-group {
+          transform-style: preserve-3d;
+          will-change: transform, opacity;
+          backface-visibility: hidden;
+          perspective: 1000px;
+        }
+        .lore-item {
+          transform-origin: center center;
+          will-change: transform, opacity;
+          backface-visibility: hidden;
+          pointer-events: none;
+          perspective: 1000px;
+        }
+        .lore-item video,
+        .lore-item img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.2));
+        }
+        .lore-text-frame {
+          box-shadow: 0 0 20px rgba(0, 255, 255, 0.1),
+                     inset 0 0 30px rgba(0, 255, 255, 0.05);
+          transform-style: preserve-3d;
+          will-change: transform, opacity;
+          perspective: 1000px;
+        }
+        .text-glow-sm {
+          text-shadow: 0 0 10px rgba(255, 255, 255, 0.6),
+                      0 0 20px rgba(255, 255, 255, 0.4);
         }
       `}</style>
     </div>

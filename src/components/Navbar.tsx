@@ -12,23 +12,23 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
     <nav ref={ref} className="fixed top-0 left-0 w-full z-[200] px-8 py-3">
       <div className="max-w-7xl mx-auto">
         {/* Main navbar container with neon effect */}
-        <div className="relative backdrop-blur-md bg-black/10 border-[3px] border-white overflow-hidden nav-container-glow">
+        <div className="relative backdrop-blur-md bg-black/10 border-[3px] border-white overflow-hidden nav-container-glow flex items-center">
           {/* Animated gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-r from-[#0066ff]/30 via-[#00ffff]/30 to-[#0066ff]/30"></div>
           
           {/* Navigation content */}
-          <div className="relative px-8 py-[6px] flex items-center justify-between">
+          <div className="relative px-8 flex items-center justify-between w-full min-h-[40px]">
             {/* Logo */}
-            <Link href="/" className="text-white font-bold text-xl tracking-[0.2em] hover:text-[#00ffff] transition-colors duration-300 text-glow-blue">
+            <Link href="/" className="text-white font-bold text-xl tracking-[0.2em] hover:text-[#00ffff] transition-colors duration-300 text-glow-blue flex items-center justify-center h-[40px]">
               KANSTAR
             </Link>
 
             {/* Center Navigation */}
-            <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center gap-16">
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-16">
               {/* Explore Dropdown */}
-              <div className="relative group">
+              <div className="relative group flex items-center h-full">
                 <button 
-                  className="text-white hover:text-[#00ffff] transition-all duration-300 tracking-[0.2em] font-medium nav-text-glow text-sm"
+                  className="text-white hover:text-[#00ffff] transition-all duration-300 tracking-[0.2em] font-medium nav-text-glow text-sm flex items-center leading-none"
                   onMouseEnter={() => setIsExploreOpen(true)}
                   onMouseLeave={() => setIsExploreOpen(false)}
                 >
@@ -48,31 +48,31 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
                   onMouseLeave={() => setIsExploreOpen(false)}
                 >
                   <div className="relative">
-                    <a href="#heroes" className="block px-4 py-2 text-white hover:text-[#00ffff] hover:bg-white/10 transition-colors duration-300 text-sm tracking-wider">
+                    <a href="#heroes" className="block px-4 py-2 text-white hover:text-[#00ffff] hover:bg-white/10 transition-colors duration-300 text-sm tracking-wider leading-none">
                       HEROES
                     </a>
-                    <a href="#lore" className="block px-4 py-2 text-white hover:text-[#00ffff] hover:bg-white/10 transition-colors duration-300 text-sm tracking-wider">
+                    <a href="#lore" className="block px-4 py-2 text-white hover:text-[#00ffff] hover:bg-white/10 transition-colors duration-300 text-sm tracking-wider leading-none">
                       LORE
                     </a>
-                    <a href="#roadmap" className="block px-4 py-2 text-white hover:text-[#00ffff] hover:bg-white/10 transition-colors duration-300 text-sm tracking-wider">
+                    <a href="#roadmap" className="block px-4 py-2 text-white hover:text-[#00ffff] hover:bg-white/10 transition-colors duration-300 text-sm tracking-wider leading-none">
                       ROADMAP
                     </a>
-                    <a href="#token" className="block px-4 py-2 text-white hover:text-[#00ffff] hover:bg-white/10 transition-colors duration-300 text-sm tracking-wider">
+                    <a href="#token" className="block px-4 py-2 text-white hover:text-[#00ffff] hover:bg-white/10 transition-colors duration-300 text-sm tracking-wider leading-none">
                       TOKEN
                     </a>
-                    <a href="#nft" className="block px-4 py-2 text-white hover:text-[#00ffff] hover:bg-white/10 transition-colors duration-300 text-sm tracking-wider">
+                    <a href="#nft" className="block px-4 py-2 text-white hover:text-[#00ffff] hover:bg-white/10 transition-colors duration-300 text-sm tracking-wider leading-none">
                       NFT
                     </a>
                   </div>
                 </div>
               </div>
-              <Link href="/merch" className="text-white hover:text-[#00ffff] transition-all duration-300 tracking-[0.2em] font-medium nav-text-glow text-sm">
+              <Link href="/merch" className="text-white hover:text-[#00ffff] transition-all duration-300 tracking-[0.2em] font-medium nav-text-glow text-sm flex items-center leading-none">
                 SHOP
               </Link>
             </div>
 
             {/* Connect Wallet Button */}
-            <button className="px-4 py-[3px] bg-[#00ffff] text-white hover:bg-[#00cccc] transition-all duration-300 tracking-[0.1em] font-medium nav-text-glow border-[2px] border-[#00ffff] button-glow text-sm">
+            <button className="px-8 py-[6px] backdrop-blur-md bg-black/30 text-white hover:bg-black/40 transition-all duration-300 tracking-[0.2em] font-medium border-[2px] border-white collection-button-glow text-sm flex items-center leading-none">
               CONNECT WALLET
             </button>
           </div>
@@ -108,15 +108,11 @@ const Navbar = forwardRef<HTMLElement, NavbarProps>((props, ref) => {
                        0 0 45px rgba(0, 102, 255, 0.6),
                        0 0 55px rgba(255, 255, 255, 0.5);
         }
-        .button-glow {
-          box-shadow: 0 0 15px #00ffff,
-                     0 0 30px #00ffff,
-                     0 0 45px rgba(0, 255, 255, 0.8),
-                     0 0 60px rgba(0, 255, 255, 0.7),
-                     0 0 75px rgba(0, 255, 255, 0.6),
-                     0 0 90px rgba(0, 102, 255, 0.5),
-                     inset 0 0 15px rgba(255, 255, 255, 0.9),
-                     inset 0 0 30px rgba(0, 255, 255, 0.7);
+        .collection-button-glow {
+          box-shadow: 0 0 15px rgba(0, 255, 255, 0.5),
+                     0 0 30px rgba(0, 255, 255, 0.3),
+                     inset 0 0 15px rgba(0, 255, 255, 0.3);
+          text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
         }
       `}</style>
     </nav>

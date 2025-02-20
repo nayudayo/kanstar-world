@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useRef } from 'react';
 import Navbar from '../../components/Navbar';
+import OptimizedVideo from '../../components/OptimizedVideo';
 
 export default function MerchPage() {
   const navRef = useRef<HTMLElement>(null);
@@ -23,14 +24,12 @@ export default function MerchPage() {
       {/* Content */}
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center gap-8">
         <div className="relative w-[400px] h-[400px]">
-          {/* Testing with regular img tag */}
-          <img
-            src="/images/assets/merch/Merch.GIF"
+          <OptimizedVideo
+            webm="/videos/assets/merch/Merch.GIF.webm"
+            mp4="/videos/assets/merch/Merch.GIF.mp4"
+            fallbackImage="/images/assets/merch/Merch.GIF"
             alt="Merch"
             className="w-full h-full object-contain"
-            onError={(e) => {
-              console.error('Error loading image:', e);
-            }}
           />
         </div>
         <p className="text-white text-2xl font-bold animate-pulse">

@@ -18,6 +18,7 @@ const LoadingScreen = ({ onLoadComplete }: LoadingScreenProps) => {
   const [progress, setProgress] = useState(0);
   const [currentTip, setCurrentTip] = useState(0);
   const [loadedAssets, setLoadedAssets] = useState(new Set<string>());
+  const [isFadingOut, setIsFadingOut] = useState(false);
 
   // Preload single asset
   const preloadAsset = async (src: string): Promise<void> => {
@@ -66,13 +67,16 @@ const LoadingScreen = ({ onLoadComplete }: LoadingScreenProps) => {
 
         // Ensure all assets are loaded before proceeding
         if (loadedCount === totalAssets) {
-          // Small delay for smooth transition
+          // Start fade out animation
+          setIsFadingOut(true);
+          // Call onLoadComplete after fade out animation
           setTimeout(onLoadComplete, 1000);
         }
       } catch (error) {
         console.error('Error loading assets:', error);
         // Implement retry logic here
         // For now, we'll proceed anyway after a delay
+        setIsFadingOut(true);
         setTimeout(onLoadComplete, 2000);
       }
     };
@@ -88,7 +92,7 @@ const LoadingScreen = ({ onLoadComplete }: LoadingScreenProps) => {
   }, [onLoadComplete]);
 
   return (
-    <div className="fixed inset-0 bg-black z-[1000] flex flex-col items-center justify-center">
+    <div className={`fixed inset-0 bg-black z-[1000] flex flex-col items-center justify-center transition-opacity duration-1000 ${isFadingOut ? 'opacity-0' : 'opacity-100'}`}>
       {/* Logo/Branding */}
       <div className="mb-12">
         <h1 className="text-white text-6xl font-bold tracking-[0.2em] text-center loading-title-glow">

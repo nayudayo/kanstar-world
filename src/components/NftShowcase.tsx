@@ -83,12 +83,12 @@ const NftShowcase = () => {
       <div className="absolute top-10 left-0 right-0 px-8 py-16">
         <div className="max-w-7xl mx-auto flex items-start justify-between">
           <h2 className="text-6xl font-bold text-white text-glow-lg">
-            HUNDREDS OF UNIQUE<br />
-            DIGITAL<br />
-            COLLECTIBLES.
+            4444: A CHARMINGLY<br />
+            CRAFTED<br />
+            COLLECTION.
           </h2>
           <p className="text-lg text-gray-300 max-w-md text-glow-sm">
-            Each KANSTAR NFT is a unique digital masterpiece, crafted from our collection of over 100 hand-painted cosmic elements. These ethereal beings embody our core values of innovation, community, and boundless creativity, making them not just collectibles, but gateways to an extraordinary digital universe.
+          #1 Most Voted Community Collection on Ronin Kanstar is the ultimate cosmic good boy, a legendary fusion between a celestial being and a doggo a uniquely star-shaped backside. 
           </p>
         </div>
       </div>

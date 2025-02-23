@@ -1,38 +1,56 @@
+import { forwardRef, useRef, useEffect } from 'react';
+
 interface OptimizedVideoProps {
   webm: string;
   mp4: string;
   fallbackImage: string;
-  className?: string;
   alt: string;
+  className?: string;
 }
 
-const OptimizedVideo = ({ webm, mp4, fallbackImage, className = "", alt }: OptimizedVideoProps) => {
+const OptimizedVideo = forwardRef<HTMLDivElement, OptimizedVideoProps>(({
+  webm,
+  mp4,
+  fallbackImage,
+  alt,
+  className = ''
+}, ref) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Forward the ref to parent if needed
+    if (ref && typeof ref === 'function') {
+      ref(containerRef.current);
+    } else if (ref) {
+      ref.current = containerRef.current;
+    }
+
+    // Auto-play the video when mounted
+    const video = containerRef.current?.querySelector('video');
+    if (video) {
+      video.play().catch(err => {
+        console.warn('Initial video playback failed:', err);
+      });
+    }
+  }, [ref]);
+
   return (
-    <div className={`relative w-full h-full ${className}`}>
+    <div ref={containerRef} className={className}>
       <video
         autoPlay
-        loop
         muted
         playsInline
+        loop
         className="w-full h-full"
-        style={{ objectFit: 'contain', width: '100%', height: '100%' }}
-        poster={fallbackImage}
-        aria-label={alt}
       >
-        {/* WebM for Chrome, Firefox, Edge */}
         <source src={webm} type="video/webm" />
-        {/* MP4 for Safari and fallback */}
         <source src={mp4} type="video/mp4" />
-        {/* Fallback for browsers that don't support video */}
-        <img
-          src={fallbackImage}
-          alt={alt}
-          className="w-full h-full"
-          style={{ objectFit: 'contain' }}
-        />
+        <img src={fallbackImage} alt={alt} className="w-full h-full object-contain" />
       </video>
     </div>
   );
-};
+});
+
+OptimizedVideo.displayName = 'OptimizedVideo';
 
 export default OptimizedVideo; 

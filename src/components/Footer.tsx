@@ -1,50 +1,51 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 const Footer = () => {
   return (
     <footer className="relative w-full bg-black py-20 px-8 border-t border-white/10">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
-        {/* Socials */}
-        <div className="space-y-6">
-          <h4 className="text-white font-bold text-xl">Connect With Us</h4>
-          <div className="flex gap-4">
-            <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-              Twitter
-            </Link>
-            <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-              Discord
-            </Link>
-            <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-              Telegram
-            </Link>
-          </div>
+        {/* GIF Column */}
+        <div className="relative w-full h-[200px]">
+          <Image
+            src="/images/assets/footer.gif"
+            alt="Kanstar Coin Animation"
+            fill
+            className="object-contain"
+          />
         </div>
 
-        {/* Team */}
+        {/* Connect */}
         <div className="space-y-6">
-          <h4 className="text-white font-bold text-xl">Team</h4>
-          <ul className="space-y-3">
-            <li>
-              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                About Us
-              </Link>
-            </li>
-            <li>
-              <Link href="/founders" className="text-gray-400 hover:text-white transition-colors">
-                Founders
-              </Link>
-            </li>
-            <li>
-              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                Careers
-              </Link>
-            </li>
-            <li>
-              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                Partners
-              </Link>
-            </li>
-          </ul>
+          <h4 className="text-white font-bold text-xl">Connect</h4>
+          <div className="flex gap-6">
+            <Link 
+              href="https://discord.com" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="relative w-12 h-12 transition-transform hover:scale-110"
+            >
+              <Image
+                src="/images/assets/social-icons/icon DC.png"
+                alt="Discord"
+                fill
+                className="object-contain"
+              />
+            </Link>
+            <Link 
+              href="https://telegram.com" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="relative w-12 h-12 transition-transform hover:scale-110"
+            >
+              <Image
+                src="/images/assets/social-icons/icon TG.png"
+                alt="Telegram"
+                fill
+                className="object-contain"
+              />
+            </Link>
+          </div>
         </div>
 
         {/* Quick Links */}
@@ -52,18 +53,23 @@ const Footer = () => {
           <h4 className="text-white font-bold text-xl">Quick Links</h4>
           <ul className="space-y-3">
             <li>
-              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                Marketplace
+              <Link href="#roadmap" className="text-gray-400 hover:text-white transition-colors">
+                Roadmap
               </Link>
             </li>
             <li>
-              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
+              <Link href="#token" className="text-gray-400 hover:text-white transition-colors">
                 Token
               </Link>
             </li>
             <li>
+              <Link href="#collection" className="text-gray-400 hover:text-white transition-colors">
+                Collection
+              </Link>
+            </li>
+            <li>
               <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                Roadmap
+                Shop <span className="text-sm">(Coming Soon)</span>
               </Link>
             </li>
           </ul>
@@ -76,6 +82,11 @@ const Footer = () => {
             <li>
               <Link href="#" className="text-gray-400 hover:text-white transition-colors">
                 Terms & Conditions
+              </Link>
+            </li>
+            <li>
+              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
+                IP Rights
               </Link>
             </li>
             <li>

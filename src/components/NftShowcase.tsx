@@ -80,28 +80,75 @@ const NftShowcase = () => {
       />
       
       {/* Header Section */}
-      <div className="absolute top-10 left-0 right-0 px-8 py-16">
+      <div className="absolute -top-0 left-0 right-0 px-8 py-16">
         <div className="max-w-7xl mx-auto flex items-start justify-between">
-          <h2 className="text-6xl font-bold text-white text-glow-lg">
+          <h2 className="text-6xl lg:text-7xl font-bold text-white text-glow-lg">
             4444: A CHARMINGLY<br />
             CRAFTED<br />
             COLLECTION.
           </h2>
-          <p className="text-lg text-gray-300 max-w-md text-glow-sm">
+          <p className="text-lg lg:text-xl text-gray-300 max-w-md lg:max-w-lg text-glow-sm">
           #1 Most Voted Community Collection on Ronin Kanstar is the ultimate cosmic good boy, a legendary fusion between a celestial being and a doggo a uniquely star-shaped backside. 
           </p>
+        </div>
+
+        {/* Rarity Description Container - Moved under header */}
+        <div className="max-w-7xl mx-auto mt-16 lg:mt-20 flex justify-end ml-20 lg:ml-40 translate-x-40">
+          <div className="relative w-[500px] h-[500px] lg:w-[600px] lg:h-[600px] scale-125 -translate-y-20 translate-x-20 lg:translate-x-10 -mt-10">
+            {/* Background Image */}
+            <Image
+              src="/images/assets/rarity-desc.png"
+              alt="Rarity Description Background"
+              fill
+              className="object-contain"
+              priority
+            />
+            
+            {/* Content Container */}
+            <div className="absolute inset-0 flex flex-col justify-center p-10 lg:p-12 space-y-3 lg:space-y-4 -translate-y-0 translate-x-24 lg:translate-x-24">
+              {/* Legendary */}
+              <div className="space-y-0.5 lg:space-y-1">
+                <h3 className="text-xl lg:text-2xl font-bold text-[#FFD700] tracking-wider rarity-title-glow">Legendary</h3>
+                <p className="text-white/90 text-sm lg:text-base tracking-wide">Furs: Diamond, Future, Cosmic</p>
+              </div>
+
+              {/* Epic */}
+              <div className="space-y-0.5 lg:space-y-1">
+                <h3 className="text-xl lg:text-2xl font-bold text-[#A335EE] tracking-wider rarity-title-glow">Epic</h3>
+                <p className="text-white/90 text-sm lg:text-base tracking-wide">Furs: Fire, Snowy, Ocean, Golden</p>
+              </div>
+
+              {/* Rare */}
+              <div className="space-y-0.5 lg:space-y-1">
+                <h3 className="text-xl lg:text-2xl font-bold text-[#0070DD] tracking-wider rarity-title-glow">Rare</h3>
+                <p className="text-white/90 text-sm lg:text-base tracking-wide">Furs: Plushie, Gummy, Undead</p>
+              </div>
+
+              {/* Uncommon */}
+              <div className="space-y-0.5 lg:space-y-1">
+                <h3 className="text-xl lg:text-2xl font-bold text-[#1EFF00] tracking-wider rarity-title-glow">Uncommon</h3>
+                <p className="text-white/90 text-sm lg:text-base tracking-wide">Furs: Dalmatta, Fluffy, Pinky</p>
+              </div>
+
+              {/* Common */}
+              <div className="space-y-0.5 lg:space-y-1">
+                <h3 className="text-xl lg:text-2xl font-bold text-[#FFFFFF] tracking-wider rarity-title-glow">Common</h3>
+                <p className="text-white/90 text-sm lg:text-base tracking-wide">Furs: Bluey, Blacky, Yellow</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       
       {/* NFT Carousel Container */}
-      <div className="absolute inset-0 flex items-center justify-center">
+      <div className="absolute inset-0 flex items-center">
         <div 
           ref={sliderRef}
           data-nft-slider
-          className="relative w-[800px] h-[400px] flex items-center justify-center translate-y-20"
+          className="relative w-[800px] lg:w-[1000px] h-[400px] lg:h-[500px] flex items-center justify-center translate-y-20 ml-20 lg:ml-32"
         >
           {/* Single Sequence of Cards */}
-          <div className="relative h-[400px] flex items-center justify-center mt-[250px]">
+          <div className="relative h-[400px] lg:h-[500px] flex items-center justify-center mt-[100px] lg:mt-[120px]">
             {/* Preview Cards - Left Side */}
             {[1, 0].map((offset) => {
               const xOffset = -175 - (offset * 160);
@@ -112,7 +159,7 @@ const NftShowcase = () => {
               return (
                 <div
                   key={`preview-left-${offset}`}
-                  className="absolute w-[280px] aspect-[3/4] rounded-[30px] overflow-hidden shadow-2xl cursor-pointer"
+                  className="absolute w-[280px] lg:w-[320px] aspect-[3/4] rounded-[30px] overflow-hidden shadow-2xl cursor-pointer"
                   style={{
                     left: `calc(50% + ${xOffset}px)`,
                     transform: `translateX(-50%) scale(${scale})`,
@@ -137,7 +184,7 @@ const NftShowcase = () => {
             <div
               key="card-main"
               ref={(el) => setCardRef(el, 0)}
-              className="absolute w-[280px] aspect-[3/4] rounded-[30px] overflow-hidden shadow-2xl cursor-pointer"
+              className="absolute w-[280px] lg:w-[320px] aspect-[3/4] rounded-[30px] overflow-hidden shadow-2xl cursor-pointer"
               style={{
                 left: 'calc(50% - 13px)',
                 transform: `translateX(-50%) scale(0.9)`,
@@ -171,7 +218,7 @@ const NftShowcase = () => {
                 <div
                   key={`preview-right-${offset}`}
                   ref={(el) => setCardRef(el, offset + 1)}
-                  className="absolute w-[280px] aspect-[3/4] rounded-[30px] overflow-hidden shadow-2xl cursor-pointer"
+                  className="absolute w-[280px] lg:w-[320px] aspect-[3/4] rounded-[30px] overflow-hidden shadow-2xl cursor-pointer"
                   style={{
                     left: `calc(50% + ${xOffset}px)`,
                     transform: `translateX(-50%) scale(${scale})`,
@@ -193,6 +240,9 @@ const NftShowcase = () => {
             })}
           </div>
         </div>
+
+        {/* Remove the old rarity container from here */}
+        <div className="flex-1"></div>
       </div>
 
       {/* Add extra padding space at the bottom */}
@@ -214,6 +264,15 @@ const NftShowcase = () => {
           </div>
         </div>
       )}
+
+      {/* Add styles for rarity titles */}
+      <style jsx>{`
+        .rarity-title-glow {
+          text-shadow: 0 0 10px currentColor,
+                      0 0 20px currentColor,
+                      0 0 30px currentColor;
+        }
+      `}</style>
     </div>
   );
 };

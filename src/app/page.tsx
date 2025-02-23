@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "../components/Navbar";
@@ -14,6 +14,7 @@ import OptimizedVideo from "../components/OptimizedVideo";
 import { ASSET_MANIFEST } from "../config/assets";
 import { usePerformanceMonitoring } from "../hooks/usePerformanceMonitoring";
 import { scrollOptimizer } from "../utils/scrollOptimization";
+import "../styles/lore-grid.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -23,6 +24,27 @@ export default function Home() {
   const containerRef = useRef<HTMLDivElement>(null);
   const sectionsRef = useRef<HTMLElement[]>([]);
   const navRef = useRef<HTMLElement>(null);
+  const heroesRef = useRef<HTMLElement>(null);
+  const heroesTimelineRef = useRef<gsap.core.Timeline | null>(null);
+
+  // Add video refs and hover handlers
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+
+  const handleMouseEnter = useCallback((index: number) => {
+    const video = videoRefs.current[index];
+    if (video) {
+      video.pause();
+    }
+  }, []);
+
+  const handleMouseLeave = useCallback((index: number) => {
+    const video = videoRefs.current[index];
+    if (video) {
+      video.play().catch(err => {
+        console.warn('Video playback failed:', err);
+      });
+    }
+  }, []);
 
   // Initialize performance monitoring
   usePerformanceMonitoring({
@@ -117,59 +139,39 @@ export default function Home() {
           scrollOptimizer.optimizeTimeline(landingTimeline);
         } else if (index === 1) {
           // Second Section - Heroes Animation
-          const heroesTimeline = gsap.timeline({
-            scrollTrigger: {
-              trigger: section,
-              start: "top center",
-              toggleActions: "play none none none",
-              markers: false
-            }
+          // Create the timeline but don't play it yet
+          heroesTimelineRef.current = gsap.timeline({ paused: true });
+          
+          // Set initial state
+          gsap.set(section.querySelector('.heroes-container'), {
+            opacity: 0,
+            scale: 0.5,
+            filter: 'blur(15px)',
+            y: 50,
+            transformOrigin: "center center"
           });
 
-          // Heroes animation sequence - One smooth motion
-          heroesTimeline
-            .fromTo(section.querySelector('.heroes-container'), 
-              {
-                opacity: 0,
-                scale: 0.5,
-                filter: 'blur(15px)',
-                y: 50,
-                transformOrigin: "center center"
-              }, 
-              {
-                opacity: 1,
-                scale: 1,
-                filter: 'blur(0px)',
-                y: 0,
-                duration: 1.5,
-                ease: "power3.out"
-              }
-            )
+          // Define the animation sequence
+          heroesTimelineRef.current
             .to(section.querySelector('.heroes-container'), {
-              scale: 1.02,
-              duration: 1,
+              opacity: 1,
+              scale: 1,
+              filter: 'blur(0px)',
+              y: 0,
+              duration: 0.8,
+              ease: "power2.out"
+            })
+            .to(section.querySelector('.heroes-container'), {
+              scale: 1.05,
+              duration: 0.4,
               ease: "power1.inOut",
               yoyo: true,
               repeat: 1
             });
 
-          scrollOptimizer.optimizeTimeline(heroesTimeline);
+          scrollOptimizer.optimizeTimeline(heroesTimelineRef.current);
         } else if (index === 2) {
-          // Third Section - Lore Section with individual animations
-          const lorePin = ScrollTrigger.create({
-            trigger: section,
-            start: "top top",
-            end: "+=300%",
-            pin: true,
-            pinSpacing: true,
-            anticipatePin: 1,
-            markers: true,
-            onEnter: () => {
-              console.log("Lore section entered");
-              lorePin.refresh();
-            }
-          });
-
+          // Third Section - Lore Section
           // Story telling animation - One smooth continuous motion
           const storyTellingTimeline = gsap.timeline({
             scrollTrigger: {
@@ -198,134 +200,8 @@ export default function Home() {
               }
             );
 
-          // Single timeline for all lore items in sequence
-          const loreTimeline = gsap.timeline({
-            scrollTrigger: {
-              trigger: section,
-              start: "top top",
-              end: "+=300%",
-              scrub: 1,
-              snap: {
-                snapTo: "labels",
-                duration: { min: 0.2, max: 0.4 },
-                ease: "power1.inOut"
-              }
-            }
-          });
-
-          // First Lore Item
-          loreTimeline
-            .fromTo(".lore-section-1 .lore-item-group",
-              {
-                yPercent: 150,
-                opacity: 0,
-                scale: 0.8
-              },
-              {
-                yPercent: -50,
-                opacity: 1,
-                scale: 1,
-                duration: 0.4
-              }
-            )
-            .fromTo(".lore-section-1 .lore-text-frame",
-              {
-                opacity: 0,
-                x: 50
-              },
-              {
-                opacity: 1,
-                x: 0,
-                duration: 0.3
-              },
-              "-=0.2"
-            )
-            .addLabel("lore1-stay")
-            .to(".lore-section-1 .lore-item-group", {
-              yPercent: -100,
-              opacity: 0,
-              scale: 0.8,
-              duration: 0.4
-            }, "+=0.5")
-            .to(".lore-section-1 .lore-text-frame", {
-              opacity: 0,
-              x: -50,
-              duration: 0.3
-            }, "<")
-            .addLabel("lore1-end")
-
-            // Second Lore Item
-            .fromTo(".lore-section-2 .lore-item-group",
-              {
-                yPercent: 150,
-                opacity: 0,
-                scale: 0.8
-              },
-              {
-                yPercent: -50,
-                opacity: 1,
-                scale: 1,
-                duration: 0.4
-              }
-            )
-            .fromTo(".lore-section-2 .lore-text-frame",
-              {
-                opacity: 0,
-                x: 50
-              },
-              {
-                opacity: 1,
-                x: 0,
-                duration: 0.3
-              },
-              "-=0.2"
-            )
-            .addLabel("lore2-stay")
-            .to(".lore-section-2 .lore-item-group", {
-              yPercent: -100,
-              opacity: 0,
-              scale: 0.8,
-              duration: 0.4
-            }, "+=0.5")
-            .to(".lore-section-2 .lore-text-frame", {
-              opacity: 0,
-              x: -50,
-              duration: 0.3
-            }, "<")
-            .addLabel("lore2-end")
-
-            // Third Lore Item
-            .fromTo(".lore-section-3 .lore-item-group",
-              {
-                yPercent: 150,
-                opacity: 0,
-                scale: 0.8
-              },
-              {
-                yPercent: -50,
-                opacity: 1,
-                scale: 1,
-                duration: 0.4
-              }
-            )
-            .fromTo(".lore-section-3 .lore-text-frame",
-              {
-                opacity: 0,
-                x: 50
-              },
-              {
-                opacity: 1,
-                x: 0,
-                duration: 0.3
-              },
-              "-=0.2"
-            )
-            .addLabel("lore3-stay");
-
-          // Optimize timelines
-          [storyTellingTimeline, loreTimeline].forEach(timeline => {
-            scrollOptimizer.optimizeTimeline(timeline);
-          });
+          // Optimize timeline
+          scrollOptimizer.optimizeTimeline(storyTellingTimeline);
         } else if (index === 5) {
           // Sixth Section - NFT Showcase
           const nftTimeline = gsap.timeline({
@@ -395,6 +271,47 @@ export default function Home() {
     return () => ctx.revert();
   };
 
+  // Handle Heroes section visibility
+  useEffect(() => {
+    if (!heroesRef.current || !heroesTimelineRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // When entering view, add a delay before playing
+            setTimeout(() => {
+              heroesTimelineRef.current?.play();
+            }, 200); // 800ms delay
+          } else {
+            // When leaving view, reverse the animation
+            if (entry.boundingClientRect.top > 0) {
+              // Scrolling up
+              gsap.to(entry.target.querySelector('.heroes-container'), {
+                opacity: 0,
+                scale: 0.5,
+                filter: 'blur(15px)',
+                y: 50,
+                duration: 0.4,
+                ease: "power2.in",
+                onComplete: () => {
+                  heroesTimelineRef.current?.pause(0);
+                }
+              });
+            }
+          }
+        });
+      },
+      {
+        threshold: 0.6, // Trigger when 60% visible instead of 30%
+      }
+    );
+
+    observer.observe(heroesRef.current);
+
+    return () => observer.disconnect();
+  }, [contentVisible]);
+
   return (
     <>
       {isLoading && <LoadingScreen onLoadComplete={handleLoadComplete} />}
@@ -417,11 +334,20 @@ export default function Home() {
           
           {/* Title Overlay */}
           <div className="absolute inset-0 flex items-center z-[2]">
-            <div className="content-container relative w-full bg-white/20 backdrop-blur-sm py-8 md:py-12 border-y border-white/10 overflow-visible">
-              <div className="max-w-7xl mx-auto px-4 md:px-8 relative">
-                {/* Planet Container - Positioned absolutely relative to the content container */}
-                <div className="absolute left-[20%] top-[50%] -translate-x-1/2 -translate-y-1/2">
-                  <div className="relative w-[600px] md:w-[800px] lg:w-[1000px] h-[600px] md:h-[800px] lg:h-[1000px]">
+            <div className="content-container relative w-full bg-white/20 backdrop-blur-sm py-8 border-y border-white/10 overflow-visible">
+              <div className="max-w-[1920px] mx-auto px-8 xl:px-6 lg:px-4 md:px-4 sm:px-2 relative">
+                {/* Planet Container - Base size for large screens */}
+                <div className="absolute left-[30%] top-[50%] -translate-x-1/2 -translate-y-1/2">
+                  <div className={`
+                    relative 
+                    w-[1000px] h-[1000px]
+                    2xl:w-[1000px] 2xl:h-[1000px]
+                    xl:w-[800px] xl:h-[800px]
+                    lg:w-[600px] lg:h-[600px]
+                    md:w-[400px] md:h-[400px]
+                    sm:w-[300px] sm:h-[300px]
+                    transition-all duration-300 ease-in-out
+                  `}>
                     <Image
                       src={ASSET_MANIFEST.VIDEOS.PLANET.fallback}
                       alt={ASSET_MANIFEST.VIDEOS.PLANET.alt}
@@ -432,21 +358,61 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Title Content */}
-                <div className="text-right relative z-10">
-                  <h1 className="text-white text-5xl md:text-6xl lg:text-8xl font-bold tracking-[0.2em] title-glow">
+                {/* Title Content - Right aligned with responsive text */}
+                <div className={`
+                  text-right relative z-10
+                  ml-auto
+                  w-[50%]
+                  xl:w-[60%]
+                  lg:w-[70%]
+                  md:w-full md:text-center
+                `}>
+                  <h1 className={`
+                    text-white font-bold tracking-[0.2em] title-glow
+                    text-[8rem]
+                    2xl:text-[8rem]
+                    xl:text-[6rem]
+                    lg:text-7xl
+                    md:text-6xl
+                    sm:text-4xl
+                  `}>
                     KANSTAR<br />WORLD
                   </h1>
-                  <p className="text-[#FFD700] text-lg md:text-xl lg:text-2xl mt-4 md:mt-6 tracking-[0.3em] subtitle-glow">
+                  <p className={`
+                    text-[#FFD700] tracking-[0.3em] subtitle-glow
+                    text-2xl mt-6
+                    xl:text-xl xl:mt-5
+                    lg:text-lg lg:mt-4
+                    md:text-base md:mt-3
+                    sm:text-sm sm:mt-2
+                  `}>
                     THE ULTIMATE COSMIC DOGGO
                   </p>
                 </div>
               </div>
 
-              {/* Collection Button - Aligned with subtitle text */}
-              <div className="absolute max-w-7xl w-full right-0 left-0 mx-auto px-4 md:px-8">
-                <div className="flex justify-end">
-                  <button className="px-8 md:px-12 py-2 md:py-3 backdrop-blur-md bg-black/30 text-white hover:bg-black/40 transition-all duration-300 tracking-[0.2em] font-medium border-[2px] border-white collection-button-glow text-base md:text-lg z-[3] translate-y-16 md:translate-y-24">
+              {/* Collection Button - Responsive positioning and sizing */}
+              <div className="absolute max-w-[1920px] w-full right-0 left-0 mx-auto px-8 xl:px-6 lg:px-4 md:px-4 sm:px-2">
+                <div className={`
+                  flex justify-end
+                  ml-auto
+                  w-[50%]
+                  xl:w-[60%]
+                  lg:w-[70%]
+                  md:w-full md:justify-center
+                `}>
+                  <button className={`
+                    backdrop-blur-md bg-black/30 text-white 
+                    hover:bg-black/40 transition-all duration-300 
+                    tracking-[0.2em] font-medium border-[2px] 
+                    border-white collection-button-glow
+                    px-12 py-3 text-lg translate-y-32
+                    xl:px-10 xl:py-2.5 xl:text-base xl:translate-y-20
+                    lg:px-8 lg:py-2 lg:translate-y-16
+                    md:px-6 md:translate-y-12
+                    sm:px-4 sm:text-sm sm:translate-y-8
+                    relative z-10
+                  `}>
                     CHECK COLLECTION
                   </button>
                 </div>
@@ -456,7 +422,14 @@ export default function Home() {
         </section>
 
         {/* Second Section - Heroes Animation */}
-        <section id="heroes" ref={addToRefs} className="relative h-screen w-full overflow-hidden">
+        <section 
+          id="heroes" 
+          ref={(el) => {
+            addToRefs(el);
+            if (el) heroesRef.current = el;
+          }} 
+          className="relative h-screen w-full overflow-hidden"
+        >
           <Image
             src={ASSET_MANIFEST.CRITICAL.BACKGROUND}
             alt="Cosmic Background"
@@ -489,7 +462,7 @@ export default function Home() {
           <div className="absolute inset-0">
             <div className="relative w-full h-full flex items-center justify-center">
               {/* Story Telling Container - Left Side */}
-              <div className="story-telling-container absolute left-[25%] top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] flex items-center justify-center z-20">
+              <div className="story-telling-container absolute left-[25%] top-1/2 -translate-x-1/2 -translate-y-1/2 w-[40vw] h-[40vw] max-w-[600px] max-h-[600px] min-w-[300px] min-h-[300px] flex items-center justify-center z-20 flex-col">
                 <OptimizedVideo
                   webm={ASSET_MANIFEST.VIDEOS.LORE_STORYTELLING.webm}
                   mp4={ASSET_MANIFEST.VIDEOS.LORE_STORYTELLING.mp4}
@@ -497,48 +470,51 @@ export default function Home() {
                   alt={ASSET_MANIFEST.VIDEOS.LORE_STORYTELLING.alt}
                   className="object-contain"
                 />
+                <h2 className="story-telling-title">The Epic Saga of the Kanstars</h2>
               </div>
 
-              {/* Lore Items Container - Right Side */}
-              <div className="relative w-[600px] h-[600px] ml-auto mr-[20%]">
-                {[1, 2, 3].map((num) => {
+              {/* Lore Grid Container - Right Side */}
+              <div className="relative w-[40vw] h-[40vw] max-w-[600px] max-h-[600px] min-w-[300px] min-h-[300px] ml-auto mr-[10%] lg:mr-[20%] grid grid-cols-2 gap-8">
+                {[1, 2, 3, 4].map((num, index) => {
                   const videoKey = `LORE_${num}` as keyof typeof ASSET_MANIFEST.VIDEOS;
                   return (
                     <div 
                       key={num}
-                      className={`lore-section-${num} absolute w-full h-full`}
+                      className="lore-grid-item"
+                      onMouseEnter={() => handleMouseEnter(index)}
+                      onMouseLeave={() => handleMouseLeave(index)}
                     >
-                      <div 
-                        className="lore-item-group absolute w-full h-[400px]"
-                        style={{
-                          top: '50%',
-                          left: '50%',
-                          transform: 'translate(-50%, -50%)',
-                          zIndex: 10 - num,
-                          transformStyle: 'preserve-3d',
-                          opacity: 0
+                      <OptimizedVideo
+                        webm={ASSET_MANIFEST.VIDEOS[videoKey].webm}
+                        mp4={ASSET_MANIFEST.VIDEOS[videoKey].mp4}
+                        fallbackImage={ASSET_MANIFEST.VIDEOS[videoKey].fallback}
+                        alt={ASSET_MANIFEST.VIDEOS[videoKey].alt}
+                        className="w-full h-full object-cover"
+                        ref={(el: HTMLDivElement | null) => {
+                          if (el) {
+                            const videoEl = el.querySelector('video');
+                            videoRefs.current[index] = videoEl;
+                          }
                         }}
-                      >
-                        <div className="lore-item relative w-full h-full">
-                          <OptimizedVideo
-                            webm={ASSET_MANIFEST.VIDEOS[videoKey].webm}
-                            mp4={ASSET_MANIFEST.VIDEOS[videoKey].mp4}
-                            fallbackImage={ASSET_MANIFEST.VIDEOS[videoKey].fallback}
-                            alt={ASSET_MANIFEST.VIDEOS[videoKey].alt}
-                            className="object-contain"
-                          />
-                        </div>
-                        <div 
-                          className="lore-text-frame absolute left-[90%] top-1/2 -translate-y-1/2 w-[300px] backdrop-blur-md bg-black/30 p-6 rounded-lg border border-white/10"
-                          style={{ zIndex: 20, opacity: 0 }}
-                        >
-                          <h3 className="text-white text-2xl font-bold mb-4 tracking-wider text-glow-sm">Chapter {num}</h3>
-                          <p className="text-white/90 text-lg leading-relaxed">
-                            {num === 1 && "In the vast expanse of the cosmos, the Kanstar emerged as guardians of the celestial realms..."}
-                            {num === 2 && "As their power grew, they discovered ancient artifacts that would shape their destiny..."}
-                            {num === 3 && "United in purpose, the Kanstar now protect the balance of the cosmic forces..."}
-                          </p>
-                        </div>
+                      />
+                      {/* Overlay for blur effect */}
+                      <div className="lore-grid-overlay">
+                        <div className="blur-mask"></div>
+                      </div>
+                      {/* Separate text layer */}
+                      <div className="lore-text-layer">
+                        <h3>
+                          {num === 1 && "Origins of the Kanstar"}
+                          {num === 2 && "The Great Discovery"}
+                          {num === 3 && "Cosmic Guardians"}
+                          {num === 4 && "Future of the Stars"}
+                        </h3>
+                        <p>
+                          {num === 1 && "In the distant third cosmic string, the planet Kanstar was invaded by a ruthless alien force."}
+                          {num === 2 && "Amid the devastation, the Architect, a guardian of ancient secrets, embarks on a quest to revive his lost race."}
+                          {num === 3 && "His search leads him to the Canis Amber, a relic containing Primordial Cells essential for resurrection. Of the eighteen cells found, only sixteen remain viable."}
+                          {num === 4 && "Using the Quantum Codex, he launches Project HOPE, placing the cells in Kanstar Capsules to resurrect 4,444 canine souls."}
+                        </p>
                       </div>
                     </div>
                   );
@@ -597,14 +573,20 @@ export default function Home() {
               </div>
 
               {/* Center Text */}
-              <div className="flex flex-col items-center gap-8 mx-10">
-                <h2 className="text-white text-6xl font-bold tracking-[0.2em] title-glow text-center">
+              <div className="flex flex-col items-center gap-4 mx-10">
+                <h2 className="text-white text-6xl font-bold tracking-[0.2em] title-glow text-center -mb-20">
                   PURCHASE
                 </h2>
-                <div className="text-[#FFA500] text-7xl font-bold tracking-[0.2em] token-glow text-center">
-                  $KANSTAR
+                <div className="relative w-[400px] h-[400px] my-2">
+                  <Image
+                    src="/images/assets/$kanstar.PNG"
+                    alt="$KANSTAR Token"
+                    fill
+                    className="object-contain"
+                    priority
+                  />
                 </div>
-                <h2 className="text-white text-6xl font-bold tracking-[0.2em] title-glow text-center">
+                <h2 className="text-white text-6xl font-bold tracking-[0.2em] title-glow text-center -mt-20">
                   TOKEN
                 </h2>
               </div>
@@ -669,8 +651,11 @@ export default function Home() {
                         0 0 80px rgba(255, 165, 0, 0.2);
           }
           .token-container {
-            filter: drop-shadow(0 0 30px rgba(0, 255, 255, 0.3))
-                    drop-shadow(0 0 60px rgba(0, 255, 255, 0.2));
+            filter: drop-shadow(0 0 15px rgba(0, 255, 255, 0.2));
+            transition: filter 0.3s ease-out;
+          }
+          .token-container:hover {
+            filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.3));
           }
           .collection-button-glow {
             box-shadow: 0 0 15px rgba(0, 255, 255, 0.5),

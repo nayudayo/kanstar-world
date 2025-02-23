@@ -34,6 +34,12 @@ export const ASSET_MANIFEST = {
       fallback: '/images/gif/lore/lore-3.gif',
       alt: 'Lore 3 Animation'
     },
+    LORE_4: {
+      webm: '/videos/gif/lore/lore-4.gif.webm',
+      mp4: '/videos/gif/lore/lore-4.gif.mp4',
+      fallback: '/images/gif/lore/lore-4.gif',
+      alt: 'Lore 4 Animation'
+    },
     TOKEN: {
       webm: '/videos/token-section/token.GIF.webm',
       mp4: '/videos/token-section/token.GIF.mp4',

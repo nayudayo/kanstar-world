@@ -1,0 +1,144 @@
+/* Lore Grid Item Container */
+.lore-grid-item {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+  z-index: 1;
+}
+
+/* Content Container */
+.lore-grid-item > div:first-child {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.5rem;
+}
+
+/* Video Element */
+.lore-grid-item video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: scale(1.2); /* Make the video asset larger */
+  transform-origin: center;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Scale up even more on hover */
+.lore-grid-item:hover video {
+  transform: scale(1.6);
+}
+
+.lore-grid-item:hover {
+  transform: scale(2.1);
+  z-index: 999;
+}
+
+/* Content Overlay with Glassmorphism */
+.lore-grid-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  opacity: 0;
+  transition: all 0.4s ease-out;
+  overflow: hidden;
+  border-radius: 0.5rem;
+}
+
+/* Blur Mask Container */
+.blur-mask {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.95) 0%,
+    rgba(0, 0, 0, 0.8) 50%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Show content overlay on hover */
+.lore-grid-item:hover .lore-grid-overlay {
+  opacity: 1;
+}
+
+/* Text Layer */
+.lore-text-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.85);
+  opacity: 0;
+  transition: opacity 0.4s ease-out;
+  border-radius: 0.5rem;
+}
+
+.lore-grid-item:hover .lore-text-layer {
+  opacity: 1;
+}
+
+.lore-text-layer h3 {
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.lore-text-layer p {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  font-weight: 400;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Story Telling Title */
+.story-telling-title {
+  color: white;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-align: center;
+  text-transform: uppercase;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+  margin-top: 1rem;
+}
+
+/* Adjust scale based on grid position */
+.lore-grid-item:nth-child(1) { transform-origin: top left; }
+.lore-grid-item:nth-child(2) { transform-origin: top right; }
+.lore-grid-item:nth-child(3) { transform-origin: bottom left; }
+.lore-grid-item:nth-child(4) { transform-origin: bottom right; }
+
+/* Remove unused styles */
+.lore-grid-mask, .lore-grid-item::after {
+  display: none;
+}
+
+/* Keyframe Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+} 

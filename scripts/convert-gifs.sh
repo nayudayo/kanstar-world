@@ -64,14 +64,14 @@ echo "==================================="
 
 # List of all GIFs to convert
 gifs_to_convert=(
-    "assets/merch/Merch.GIF"
+    "assets/footer.gif"
     "gif/coin-spin.gif"
     "gif/lore/lore-1.gif"
     "gif/lore/lore-2.gif"
     "gif/lore/lore-3.gif"
+    "gif/lore/lore-4.gif"
     "gif/lore/story-telling.gif"
     "planet.gif"
-    "Primordial Cell.gif"
 )
 
 # Convert all GIFs

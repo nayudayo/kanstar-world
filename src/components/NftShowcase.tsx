@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 import { gsap } from 'gsap';
+import '../styles/nft-showcase.css';
 
 const NftShowcase = () => {
   const [selectedNft, setSelectedNft] = useState<string | null>(null);
@@ -8,6 +9,35 @@ const NftShowcase = () => {
   const sliderRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<Array<HTMLDivElement | null>>([]);
   const [images, setImages] = useState<number[]>(Array.from({ length: 12 }, (_, i) => i + 1));
+
+  // Rarity data for marquee
+  const rarityData = {
+    legendary: {
+      title: 'Legendary',
+      furs: ['Diamond', 'Future', 'Cosmic'],
+      color: '#FFD700'
+    },
+    epic: {
+      title: 'Epic',
+      furs: ['Fire', 'Snowy', 'Ocean', 'Golden'],
+      color: '#A335EE'
+    },
+    rare: {
+      title: 'Rare',
+      furs: ['Plushie', 'Gummy', 'Undead'],
+      color: '#0070DD'
+    },
+    uncommon: {
+      title: 'Uncommon',
+      furs: ['Dalmatta', 'Fluffy', 'Pinky'],
+      color: '#1EFF00'
+    },
+    common: {
+      title: 'Common',
+      furs: ['Bluey', 'Blacky', 'Yellow'],
+      color: '#FFFFFF'
+    }
+  };
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -69,8 +99,19 @@ const NftShowcase = () => {
     cardsRef.current[index] = el;
   };
 
+  const RarityMarquee = ({ rarity, title, furs, color }: { rarity: string; title: string; furs: string[]; color: string }) => (
+    <div className={`rarity-marquee ${rarity}`}>
+      {/* Duplicate items for seamless loop */}
+      {[...Array(3)].map((_, i) => (
+        <div key={`${rarity}-${i}`} className="rarity-marquee-item" style={{ color }}>
+          <strong>{title}:</strong>&nbsp;{furs.join(', ')}
+        </div>
+      ))}
+    </div>
+  );
+
   return (
-    <div className="relative min-h-screen w-full overflow-hidden">
+    <div className="nft-showcase">
       <Image
         src="/images/backgrounds/cosmic-background.png"
         alt="Cosmic Background Flipped"
@@ -80,22 +121,21 @@ const NftShowcase = () => {
       />
       
       {/* Header Section */}
-      <div className="absolute -top-0 left-0 right-0 px-8 py-16">
-        <div className="max-w-7xl mx-auto flex items-start justify-between">
-          <h2 className="text-6xl lg:text-7xl font-bold text-white text-glow-lg">
+      <div className="nft-header">
+        <div className="nft-header-content">
+          <h2 className="nft-title">
             4444: A CHARMINGLY<br />
             CRAFTED<br />
             COLLECTION.
           </h2>
-          <p className="text-lg lg:text-xl text-gray-300 max-w-md lg:max-w-lg text-glow-sm">
-          #1 Most Voted Community Collection on Ronin Kanstar is the ultimate cosmic good boy, a legendary fusion between a celestial being and a doggo a uniquely star-shaped backside. 
+          <p className="nft-description">
+            #1 Most Voted Community Collection on Ronin Kanstar is the ultimate cosmic good boy, a legendary fusion between a celestial being and a doggo a uniquely star-shaped backside. 
           </p>
         </div>
 
-        {/* Rarity Description Container - Moved under header */}
-        <div className="max-w-7xl mx-auto mt-16 lg:mt-20 flex justify-end ml-20 lg:ml-40 translate-x-40">
-          <div className="relative w-[500px] h-[500px] lg:w-[600px] lg:h-[600px] scale-125 -translate-y-20 translate-x-20 lg:translate-x-10 -mt-10">
-            {/* Background Image */}
+        {/* Desktop Rarity Container */}
+        <div className="rarity-container">
+          <div className="rarity-image-container">
             <Image
               src="/images/assets/rarity-desc.png"
               alt="Rarity Description Background"
@@ -105,50 +145,63 @@ const NftShowcase = () => {
             />
             
             {/* Content Container */}
-            <div className="absolute inset-0 flex flex-col justify-center p-10 lg:p-12 space-y-3 lg:space-y-4 -translate-y-0 translate-x-24 lg:translate-x-24">
+            <div className="rarity-content">
               {/* Legendary */}
-              <div className="space-y-0.5 lg:space-y-1">
-                <h3 className="text-xl lg:text-2xl font-bold text-[#FFD700] tracking-wider rarity-title-glow">Legendary</h3>
-                <p className="text-white/90 text-sm lg:text-base tracking-wide">Furs: Diamond, Future, Cosmic</p>
+              <div className="rarity-level">
+                <h3 className="rarity-level-title rarity-legendary rarity-title-glow">Legendary</h3>
+                <p className="rarity-level-description">Furs: Diamond, Future, Cosmic</p>
               </div>
 
               {/* Epic */}
-              <div className="space-y-0.5 lg:space-y-1">
-                <h3 className="text-xl lg:text-2xl font-bold text-[#A335EE] tracking-wider rarity-title-glow">Epic</h3>
-                <p className="text-white/90 text-sm lg:text-base tracking-wide">Furs: Fire, Snowy, Ocean, Golden</p>
+              <div className="rarity-level">
+                <h3 className="rarity-level-title rarity-epic rarity-title-glow">Epic</h3>
+                <p className="rarity-level-description">Furs: Fire, Snowy, Ocean, Golden</p>
               </div>
 
               {/* Rare */}
-              <div className="space-y-0.5 lg:space-y-1">
-                <h3 className="text-xl lg:text-2xl font-bold text-[#0070DD] tracking-wider rarity-title-glow">Rare</h3>
-                <p className="text-white/90 text-sm lg:text-base tracking-wide">Furs: Plushie, Gummy, Undead</p>
+              <div className="rarity-level">
+                <h3 className="rarity-level-title rarity-rare rarity-title-glow">Rare</h3>
+                <p className="rarity-level-description">Furs: Plushie, Gummy, Undead</p>
               </div>
 
               {/* Uncommon */}
-              <div className="space-y-0.5 lg:space-y-1">
-                <h3 className="text-xl lg:text-2xl font-bold text-[#1EFF00] tracking-wider rarity-title-glow">Uncommon</h3>
-                <p className="text-white/90 text-sm lg:text-base tracking-wide">Furs: Dalmatta, Fluffy, Pinky</p>
+              <div className="rarity-level">
+                <h3 className="rarity-level-title rarity-uncommon rarity-title-glow">Uncommon</h3>
+                <p className="rarity-level-description">Furs: Dalmatta, Fluffy, Pinky</p>
               </div>
 
               {/* Common */}
-              <div className="space-y-0.5 lg:space-y-1">
-                <h3 className="text-xl lg:text-2xl font-bold text-[#FFFFFF] tracking-wider rarity-title-glow">Common</h3>
-                <p className="text-white/90 text-sm lg:text-base tracking-wide">Furs: Bluey, Blacky, Yellow</p>
+              <div className="rarity-level">
+                <h3 className="rarity-level-title rarity-common rarity-title-glow">Common</h3>
+                <p className="rarity-level-description">Furs: Bluey, Blacky, Yellow</p>
               </div>
             </div>
           </div>
         </div>
+
+        {/* Mobile Rarity Marquee Section */}
+        <div className="rarity-marquee-section">
+          {Object.entries(rarityData).map(([rarity, data]) => (
+            <RarityMarquee
+              key={rarity}
+              rarity={rarity}
+              title={data.title}
+              furs={data.furs}
+              color={data.color}
+            />
+          ))}
+        </div>
       </div>
       
       {/* NFT Carousel Container */}
-      <div className="absolute inset-0 flex items-center">
+      <div className="nft-carousel">
         <div 
           ref={sliderRef}
           data-nft-slider
-          className="relative w-[800px] lg:w-[1000px] h-[400px] lg:h-[500px] flex items-center justify-center translate-y-20 ml-20 lg:ml-32"
+          className="nft-slider"
         >
           {/* Single Sequence of Cards */}
-          <div className="relative h-[400px] lg:h-[500px] flex items-center justify-center mt-[100px] lg:mt-[120px]">
+          <div className="nft-cards-container">
             {/* Preview Cards - Left Side */}
             {[1, 0].map((offset) => {
               const xOffset = -175 - (offset * 160);
@@ -159,7 +212,7 @@ const NftShowcase = () => {
               return (
                 <div
                   key={`preview-left-${offset}`}
-                  className="absolute w-[280px] lg:w-[320px] aspect-[3/4] rounded-[30px] overflow-hidden shadow-2xl cursor-pointer"
+                  className="nft-card"
                   style={{
                     left: `calc(50% + ${xOffset}px)`,
                     transform: `translateX(-50%) scale(${scale})`,
@@ -175,7 +228,7 @@ const NftShowcase = () => {
                     className="object-cover"
                     priority
                   />
-                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20" />
+                  <div className="nft-card-overlay" />
                 </div>
               );
             })}
@@ -184,7 +237,7 @@ const NftShowcase = () => {
             <div
               key="card-main"
               ref={(el) => setCardRef(el, 0)}
-              className="absolute w-[280px] lg:w-[320px] aspect-[3/4] rounded-[30px] overflow-hidden shadow-2xl cursor-pointer"
+              className="nft-card"
               style={{
                 left: 'calc(50% - 13px)',
                 transform: `translateX(-50%) scale(0.9)`,
@@ -204,7 +257,7 @@ const NftShowcase = () => {
                 }}
                 priority
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20" />
+              <div className="nft-card-overlay" />
             </div>
 
             {/* Preview Cards - Right Side */}
@@ -218,7 +271,7 @@ const NftShowcase = () => {
                 <div
                   key={`preview-right-${offset}`}
                   ref={(el) => setCardRef(el, offset + 1)}
-                  className="absolute w-[280px] lg:w-[320px] aspect-[3/4] rounded-[30px] overflow-hidden shadow-2xl cursor-pointer"
+                  className="nft-card"
                   style={{
                     left: `calc(50% + ${xOffset}px)`,
                     transform: `translateX(-50%) scale(${scale})`,
@@ -234,27 +287,21 @@ const NftShowcase = () => {
                     className="object-cover"
                     priority
                   />
-                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20" />
+                  <div className="nft-card-overlay" />
                 </div>
               );
             })}
           </div>
         </div>
-
-        {/* Remove the old rarity container from here */}
-        <div className="flex-1"></div>
       </div>
-
-      {/* Add extra padding space at the bottom */}
-      <div className="h-[50vh]"></div>
 
       {/* NFT Dialog */}
       {selectedNft && (
         <div 
-          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-8"
+          className="nft-dialog"
           onClick={() => setSelectedNft(null)}
         >
-          <div className="relative w-full max-w-3xl aspect-[3/4]">
+          <div className="nft-dialog-content">
             <Image
               src={selectedNft}
               alt="Selected NFT"
@@ -264,15 +311,6 @@ const NftShowcase = () => {
           </div>
         </div>
       )}
-
-      {/* Add styles for rarity titles */}
-      <style jsx>{`
-        .rarity-title-glow {
-          text-shadow: 0 0 10px currentColor,
-                      0 0 20px currentColor,
-                      0 0 30px currentColor;
-        }
-      `}</style>
     </div>
   );
 };

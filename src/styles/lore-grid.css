@@ -1,11 +1,954 @@
-/* Lore Grid Item Container */
+/* Lore Grid Styles
+   Common Breakpoints:
+   Mobile Portrait: 360x640, 375x812, 390x844
+   Mobile Landscape: 640x360, 812x375, 844x390
+   Tablet Portrait: 810x1080, 1280x720
+   Tablet Landscape: 1080x810, 720x1280
+   Desktop: 1366x768, 1440x900, 1536x864
+   Large Desktop: 1600x900, 1920x1080, 2560x1440
+
+   Adjustment Guidelines:
+   1. Maintain grid responsiveness across breakpoints
+   2. Optimize hover effects for different devices
+   3. Scale content appropriately for viewport size
+   4. Preserve visual hierarchy and animations
+*/
+
+/* ============================
+   Base Grid Item Styles 
+   ============================ */
+
+/* Grid Item Container */
 .lore-grid-item {
+  /* Base positioning and dimensions
+   * - Square aspect ratio for consistent layout
+   * - Relative position for overlay positioning
+   * Use case: Grid item base structure
+   */
   position: relative;
   aspect-ratio: 1;
   border-radius: 0.5rem;
   cursor: pointer;
   transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+}
+
+/* Content Container */
+.lore-grid-item > div:first-child {
+  /* Inner content wrapper
+   * - Full dimensions of parent
+   * - Overflow control for media
+   * Use case: Media container styling
+   */
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.5rem;
+}
+
+/* Video Element */
+.lore-grid-item video {
+  /* Video sizing and positioning
+   * - Cover container while maintaining ratio
+   * - Scale effect for visual interest
+   * Use case: Video content presentation
+   */
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: scale(1.5);
   transform-origin: center;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Transform Origins */
+.lore-grid-item:nth-child(1) { transform-origin: top left; }
+.lore-grid-item:nth-child(2) { transform-origin: top right; }
+.lore-grid-item:nth-child(3) { transform-origin: bottom left; }
+.lore-grid-item:nth-child(4) { transform-origin: bottom right; }
+
+/* Overlay Styles */
+.lore-grid-overlay {
+  /* Content overlay container
+   * - Full coverage of grid item
+   * - Initial hidden state
+   * Use case: Hover effect container
+   */
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  opacity: 0;
+  transition: all 0.4s ease-out;
+  overflow: hidden;
+  border-radius: 0.5rem;
+}
+
+/* Blur Mask */
+.blur-mask {
+  /* Glassmorphism effect
+   * - Gradient background for depth
+   * - Blur effect for modern look
+   * Use case: Content overlay styling
+   */
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.95) 0%,
+    rgba(0, 0, 0, 0.8) 50%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Text Layer */
+.lore-text-layer {
+  /* Text content container
+   * - Positioned over blur mask
+   * - Initial hidden state
+   * Use case: Content text presentation
+   */
+  position: absolute;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.85);
+  opacity: 0;
+  transition: opacity 0.4s ease-out;
+  border-radius: 0.5rem;
+}
+
+/* Text Styles */
+.lore-text-layer h3 {
+  /* Heading typography
+   * - Bold, clear text
+   * - Shadow for readability
+   * Use case: Content title styling
+   */
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.lore-text-layer p {
+  /* Body text styling
+   * - Balanced opacity for hierarchy
+   * - Subtle shadow for depth
+   * Use case: Content description styling
+   */
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+  line-height: 1.6;
+  font-weight: 400;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Hover Effects */
+.lore-grid-item:hover {
+  /* Item scale on hover
+   * - Dramatic zoom effect
+   * - Increased z-index for overlap
+   * Use case: Interactive hover state
+   */
+  transform: scale(2.2);
+  z-index: 999;
+}
+
+.lore-grid-item:hover video {
+  /* Video scale on hover
+   * - Coordinated with container scale
+   * Use case: Enhanced hover effect
+   */
+  transform: scale(1.7);
+}
+
+.lore-grid-item:hover .lore-grid-overlay,
+.lore-grid-item:hover .lore-text-layer {
+  /* Show overlay and text on hover
+   * Use case: Content reveal on interaction
+   */
+  opacity: 1;
+}
+
+/* ============================
+   Responsive Breakpoints 
+   ============================ */
+
+/* Largest Screens (≥1536px) */
+@media screen and (min-width: 1536px) {
+  .lore-grid-item video {
+    transform: scale(1.5);
+  }
+  .lore-grid-item:hover {
+    transform: scale(2.2);
+  }
+  .lore-grid-item:hover video {
+    transform: scale(1.7);
+  }
+  .lore-text-layer {
+    padding: 2rem;
+  }
+  .lore-text-layer h3 {
+    font-size: 1.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .lore-text-layer p {
+    font-size: 1.125rem;
+    line-height: 1.7;
+  }
+}
+
+/* Desktop Breakpoints */
+@media screen and (max-width: 1536px) {
+  .lore-grid-item video {
+    transform: scale(1.4);
+  }
+  .lore-grid-item:hover {
+    transform: scale(2.1);
+  }
+  .lore-grid-item:hover video {
+    transform: scale(1.6);
+  }
+  .lore-text-layer {
+    padding: 1.75rem;
+  }
+  .lore-text-layer h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .lore-text-layer p {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+}
+
+@media screen and (max-width: 1440px) {
+  .lore-grid-item video {
+    transform: scale(1.35);
+  }
+  .lore-grid-item:hover {
+    transform: scale(2);
+  }
+  .lore-grid-item:hover video {
+    transform: scale(1.55);
+  }
+  .lore-text-layer {
+    padding: 1.5rem;
+  }
+  .lore-text-layer h3 {
+    font-size: 1.35rem;
+    margin-bottom: 0.875rem;
+  }
+  .lore-text-layer p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+}
+
+@media screen and (max-width: 1366px) {
+  .lore-grid-item video {
+    transform: scale(1.3);
+  }
+  .lore-grid-item:hover {
+    transform: scale(1.9);
+  }
+  .lore-grid-item:hover video {
+    transform: scale(1.5);
+  }
+  .lore-text-layer {
+    padding: 1.25rem;
+  }
+  .lore-text-layer h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+  .lore-text-layer p {
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+}
+
+/* Tablet Breakpoints */
+@media screen and (max-width: 1280px) {
+  .lore-grid-item video {
+    transform: scale(1.2);
+  }
+  .lore-grid-item:hover {
+    transform: scale(1.7);
+  }
+  .lore-grid-item:hover video {
+    transform: scale(1.4);
+  }
+  .lore-text-layer {
+    padding: 1.125rem;
+  }
+  .lore-text-layer h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.625rem;
+  }
+  .lore-text-layer p {
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .lore-grid-item video {
+    transform: scale(1.1);
+  }
+  .lore-grid-item:hover {
+    transform: scale(1.5);
+  }
+  .lore-grid-item:hover video {
+    transform: scale(1.3);
+  }
+  .lore-text-layer {
+    padding: 1rem;
+  }
+  .lore-text-layer h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  .lore-text-layer p {
+    font-size: 0.8rem;
+    line-height: 1.35;
+  }
+}
+
+/* Mobile Breakpoints */
+@media screen and (max-width: 768px) {
+  .lore-grid-container {
+    position: absolute !important;
+    width: 90vw;
+    height: auto;
+    left: 50%;
+    transform: translateX(-50%) !important;
+    gap: 1rem;
+    padding: 0.5rem;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-auto-flow: row;
+    z-index: 5;
+  }
+
+  .lore-grid-item {
+    transform-origin: center;
+    aspect-ratio: 16/9;
+    width: 100%;
+    height: 100%;
+  }
+
+  .lore-grid-item:hover {
+    transform: none;
+    z-index: 1;
+  }
+
+  .lore-grid-item video {
+    transform: scale(1);
+    object-fit: cover;
+  }
+
+  .lore-grid-item:hover video {
+    transform: scale(1);
+  }
+
+  .lore-text-layer {
+    opacity: 1;
+    padding: 0.75rem;
+    background: rgba(0, 0, 0, 0.75);
+  }
+
+  .lore-text-layer h3 {
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .lore-text-layer p {
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
+}
+
+@media screen and (max-width: 390px) {
+  .lore-grid-container {
+    width: 85vw;
+    gap: 0.75rem;
+    padding: 0.375rem;
+  }
+
+  .lore-text-layer {
+    padding: 0.625rem;
+  }
+
+  .lore-text-layer h3 {
+    font-size: 1rem;
+    margin-bottom: 0.375rem;
+  }
+
+  .lore-text-layer p {
+    font-size: 0.8125rem;
+    line-height: 1.35;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  /* Section Level Reset */
+  section#lore {
+    position: relative;
+    height: auto;
+    min-height: 100vh;
+    padding: 1rem 0;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Grid Container */
+  .lore-grid-container {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 1rem auto;
+    display: grid;
+    grid-template-areas: 
+      "item1 item2"
+      "item3 item4";
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 0 !important;
+    padding: 0;
+  }
+
+  /* Grid Items */
+  .lore-grid-item {
+    position: relative;
+    width: 90%;
+    height: 90%;
+    aspect-ratio: 1;
+    border-radius: 0.25rem;
+    transform: none !important;
+    transition: none !important;
+    margin: -0.5rem !important; /* Negative margin to create overlap effect */
+    left: 107.5%;
+    top: 210%;
+    transform: translateX(-50%) translateY(-50%);
+    max-height: 160px !important;
+  }
+
+  .lore-grid-item:nth-child(1) { grid-area: item1; }
+  .lore-grid-item:nth-child(2) { grid-area: item2; }
+  .lore-grid-item:nth-child(3) { grid-area: item3; }
+  .lore-grid-item:nth-child(4) { grid-area: item4; }
+
+  .lore-grid-item video {
+    transform: none !important;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    
+  }
+
+  /* Explicitly override hover states */
+  .lore-grid-item:hover,
+  .lore-grid-item:active,
+  .lore-grid-item:focus {
+    transform: none !important;
+    z-index: auto;
+  }
+
+  .lore-grid-item:hover video {
+    transform: none !important;
+  }
+
+  /* Text Layer Adjustments */
+  .lore-text-layer {
+    padding: 0.25rem;
+  }
+
+  .lore-text-layer h3 {
+    font-size: 0.75rem;
+    margin-bottom: 0.15rem;
+  }
+
+  .lore-text-layer p {
+    font-size: 0.6rem;
+    line-height: 1.1;
+  }
+
+  /* Story Telling Container */
+  .story-telling-container {
+    position: relative;
+    width: 90vw;
+    margin: 1rem auto;
+    padding: 0.25rem;
+  }
+
+  /* Story Telling Video */
+  .story-telling-container video {
+    width: 100%;
+    height: auto;
+    max-height: 30vh !important;
+    object-fit: contain;
+  }
+
+  /* Story Telling Title */
+  .story-telling-title {
+    width: 100%;
+    font-size: 0.575rem;
+    letter-spacing: 0.05em;
+    margin-top: 0.375rem;
+    text-align: center;
+  }
+
+  /* Hero Text */
+  .lore-hero-text {
+    width: 100%;
+    font-size: 1.25rem;
+    margin: 1rem 0;
+    text-align: center;
+    letter-spacing: 0.08em;
+  }
+}
+
+/* Height-based Adjustments */
+@media screen and (max-height: 900px) {
+  .lore-text-layer {
+    padding: 1.25rem;
+  }
+  .lore-text-layer h3 {
+    margin-bottom: 0.75rem;
+  }
+}
+
+@media screen and (max-height: 800px) {
+  .lore-text-layer {
+    padding: 1rem;
+  }
+  .lore-text-layer h3 {
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media screen and (max-height: 700px) {
+  .lore-text-layer {
+    padding: 0.875rem;
+  }
+  .lore-text-layer h3 {
+    margin-bottom: 0.375rem;
+  }
+}
+
+/* Combined Width and Height for Mobile Landscape */
+@media screen and (max-width: 844px) and (max-height: 390px),
+       (max-width: 812px) and (max-height: 375px),
+       (max-width: 640px) and (max-height: 360px) {
+  .lore-grid-item {
+    aspect-ratio: 16/9;
+  }
+
+  .lore-text-layer {
+    padding: 0.5rem;
+  }
+
+  .lore-text-layer h3 {
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .lore-text-layer p {
+    font-size: 0.75rem;
+    line-height: 1.25;
+  }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Story Telling Title */
+.story-telling-title {
+  color: white;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-align: center;
+  text-transform: uppercase;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+  margin-top: 1rem;
+}
+
+/* Remove unused styles */
+.lore-grid-mask, .lore-grid-item::after {
+  display: none;
+}
+
+/* Keyframe Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.lore-grid-text {
+  position: absolute;
+  inset: 0;
+  z-index: 1000;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  border-radius: 1rem;
+}
+
+.lore-grid-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.lore-grid-description {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #f0f0f0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 1280px) {
+  .lore-grid-text {
+    padding: 1.75rem;
+  }
+  .lore-grid-title {
+    font-size: 1.4rem;
+    margin-bottom: 0.875rem;
+  }
+  .lore-grid-description {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .lore-grid-text {
+    padding: 1.5rem;
+  }
+  .lore-grid-title {
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
+  }
+  .lore-grid-description {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .lore-grid-text {
+    padding: 1.25rem;
+  }
+  .lore-grid-title {
+    font-size: 1.2rem;
+    margin-bottom: 0.625rem;
+  }
+  .lore-grid-description {
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+}
+
+@media (max-width: 640px) {
+  .lore-grid-text {
+    padding: 1rem;
+  }
+  .lore-grid-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+  .lore-grid-description {
+    font-size: 0.8rem;
+    line-height: 1.3;
+  }
+}
+
+/* Story Telling Container */
+.story-telling-container {
+  position: absolute;
+  left: 30%;
+  top: 35%;
+  transform: translate(-50%, -50%);
+  width: 40vw;
+  height: 40vw;
+  max-width: 600px;
+  max-height: 600px;
+  min-width: 300px;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  flex-direction: column;
+}
+
+/* Lore Grid Container */
+.lore-grid-container {
+  position: relative;
+  width: 40vw;
+  height: 40vw;
+  max-width: 600px;
+  max-height: 600px;
+  min-width: 300px;
+  min-height: 300px;
+  margin-left: auto;
+  margin-right: 10%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+/* Base styles for largest screens (≥1536px) */
+@media (min-width: 1536px) {
+  .story-telling-container {
+    left: 28%;
+    width: 45vw;
+    height: 45vw;
+    top: 40%;
+  }
+  .lore-grid-container {
+    width: 45vw;
+    height: 45vw;
+    margin-right: 20%;
+    top: 10%;
+    gap: 2.5rem;
+  }
+}
+
+/* 16" Laptop screens (1440px-1536px) */
+@media (max-width: 1536px) {
+  .story-telling-container {
+    left: 28%;
+    width: 42vw;
+    height: 42vw;
+  }
+  .lore-grid-container {
+    width: 42vw;
+    height: 42vw;
+    margin-right: 10%;
+    gap: 2.25rem;
+  }
+}
+
+/* 14" Laptop screens (1366px-1440px) */
+@media (max-width: 1440px) {
+  .story-telling-container {
+    left: 25%;
+    width: 35vw;
+    height: 35vw;
+  }
+  .lore-grid-container {
+    width: 35vw;
+    height: 35vw;
+    margin-right: 15%;
+    gap: 2rem;
+  }
+}
+
+/* Large screens (1280px-1366px) */
+@media (max-width: 1366px) {
+  .story-telling-container {
+    left: 32%;
+    width: 38vw;
+    height: 38vw;
+  }
+  .lore-grid-container {
+    width: 38vw;
+    height: 38vw;
+    margin-right: 12%;
+    gap: 1.75rem;
+  }
+}
+
+/* Medium screens (1024px-1280px) */
+@media (max-width: 1280px) {
+  .story-telling-container {
+    left: 35%;
+    width: 45vw;
+    height: 45vw;
+  }
+  .lore-grid-container {
+    width: 45vw;
+    height: 45vw;
+    margin-right: 15%;
+    gap: 1.5rem;
+  }
+}
+
+/* Tablet screens (768px-1024px) */
+@media (max-width: 1024px) {
+  .story-telling-container {
+    left: 50%;
+    top: 30%;
+    width: 60vw;
+    height: 60vw;
+  }
+  .lore-grid-container {
+    position: absolute;
+    left: 50%;
+    top: 75%;
+    transform: translateX(-50%);
+    width: 60vw;
+    height: auto;
+    margin-right: 0;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+}
+
+/* Mobile screens (<768px) */
+@media (max-width: 768px) {
+  .story-telling-container {
+    width: 80vw;
+    height: 80vw;
+    top: 25%;
+  }
+  .lore-grid-container {
+    width: 80vw;
+    top: 70%;
+    gap: 1rem;
+  }
+}
+
+/* Lore Section Styles
+   Common Breakpoints:
+   Mobile Portrait: 360x640, 375x812, 390x844
+   Desktop: ≥1536px
+*/
+
+/* Base Section Layout */
+section#lore {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+section#lore .relative {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Story Telling Container - Left Side */
+.story-telling-container {
+  position: absolute;
+  left: 30%;
+  top: 35%;
+  transform: translate(-50%, -50%);
+  width: 40vw;
+  height: 40vw;
+  max-width: 600px;
+  max-height: 600px;
+  min-width: 300px;
+  min-height: 300px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+/* Story Telling Title */
+.story-telling-title {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 3rem;
+  font-weight: bold;
+  text-align: center;
+  width: 100%;
+  padding: 0 2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+}
+
+/* Hero Text */
+.lore-hero-text {
+  position: absolute;
+  top: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 4rem;
+  font-weight: bold;
+  text-align: center;
+  width: 100%;
+  z-index: 20;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Grid Container - Right Side */
+.lore-grid-container {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 40vw;
+  height: 40vw;
+  max-width: 600px;
+  max-height: 600px;
+  min-width: 300px;
+  min-height: 300px;
+  margin-left: auto;
+  margin-right: 10%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  transform: translateX(20%);
+}
+
+/* Base Grid Item Styles */
+.lore-grid-item {
+  position: flex;
+  aspect-ratio: 1;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1;
 }
 
@@ -23,122 +966,424 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  transform: scale(1.2); /* Make the video asset larger */
+  transform: scale(1.5);
   transform-origin: center;
   transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Scale up even more on hover */
-.lore-grid-item:hover video {
-  transform: scale(1.6);
-}
-
-.lore-grid-item:hover {
-  transform: scale(2.1);
-  z-index: 999;
-}
-
-/* Content Overlay with Glassmorphism */
-.lore-grid-overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  opacity: 0;
-  transition: all 0.4s ease-out;
-  overflow: hidden;
-  border-radius: 0.5rem;
-}
-
-/* Blur Mask Container */
-.blur-mask {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.95) 0%,
-    rgba(0, 0, 0, 0.8) 50%,
-    rgba(0, 0, 0, 0.4) 100%
-  );
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Show content overlay on hover */
-.lore-grid-item:hover .lore-grid-overlay {
-  opacity: 1;
-}
-
-/* Text Layer */
-.lore-text-layer {
-  position: absolute;
-  inset: 0;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 1.5rem;
-  background: rgba(0, 0, 0, 0.85);
-  opacity: 0;
-  transition: opacity 0.4s ease-out;
-  border-radius: 0.5rem;
-}
-
-.lore-grid-item:hover .lore-text-layer {
-  opacity: 1;
-}
-
-.lore-text-layer h3 {
-  color: white;
-  font-size: 1.25rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  margin-bottom: 0.75rem;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-.lore-text-layer p {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 0.875rem;
-  line-height: 1.6;
-  font-weight: 400;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-/* Story Telling Title */
-.story-telling-title {
-  color: white;
-  font-size: 2rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-align: center;
-  text-transform: uppercase;
-  text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
-  margin-top: 1rem;
-}
-
-/* Adjust scale based on grid position */
+/* Transform Origins */
 .lore-grid-item:nth-child(1) { transform-origin: top left; }
 .lore-grid-item:nth-child(2) { transform-origin: top right; }
 .lore-grid-item:nth-child(3) { transform-origin: bottom left; }
 .lore-grid-item:nth-child(4) { transform-origin: bottom right; }
 
-/* Remove unused styles */
-.lore-grid-mask, .lore-grid-item::after {
-  display: none;
+/* Hover Effects */
+.lore-grid-item:hover {
+  transform: scale(2.2);
+  z-index: 999;
 }
 
-/* Keyframe Animations */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(0.5rem);
+.lore-grid-item:hover video {
+  transform: scale(1.7);
+}
+
+/* Desktop Breakpoints */
+@media screen and (max-width: 1536px) {
+  .story-telling-container {
+    width: 45%;
+    left: 28%;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  .lore-grid-container {
+    width: 55%;
+    padding: 1.75rem;
+    gap: 0.875rem;
+    transform: translateX(15%);
+  }
+
+  .story-telling-title {
+    font-size: 2.75rem;
+    bottom: 8%;
+    transform: translateX(-50%);
+  }
+
+  .lore-hero-text {
+    font-size: 3.5rem;
+    top: 110px;
+    transform: translateX(-50%);
+  }
+}
+
+@media screen and (max-width: 1440px) {
+  .story-telling-container {
+    width: 42%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    left: 25%;
+  }
+
+  .lore-grid-container {
+    width: 58%;
+    padding: 1.5rem;
+    gap: 0.75rem;
+    transform: translateX(10%) translateY(15%);
+  }
+
+  .story-telling-title {
+    font-size: 1.5rem;
+    transform: translateX(-50%) translateY(-70%);
+  }
+
+  .lore-hero-text {
+    font-size: 4.25rem;
+    transform: translateX(-50%) translateY(-80%);
+    z-index: 200;
+  }
+}
+
+@media screen and (max-width: 1366px) {
+  .story-telling-container {
+    width: 40%;
+  }
+
+  .lore-grid-container {
+    width: 60%;
+    padding: 1.25rem;
+    gap: 0.625rem;
+  }
+
+  .story-telling-title {
+    font-size: 2.25rem;
+    bottom: 6%;
+  }
+
+  .lore-hero-text {
+    font-size: 3rem;
+    top: 90px;
+  }
+}
+
+/* Tablet Breakpoints */
+@media screen and (max-width: 1280px) {
+  .story-telling-container {
+    left: 35%;
+    width: 45vw;
+    height: 45vw;
+  }
+
+  .lore-grid-container {
+    width: 45vw;
+    height: 45vw;
+    margin-right: 15%;
+    gap: 1.5rem;
+  }
+
+  .story-telling-title {
+    font-size: 2rem;
+    bottom: 5%;
+  }
+
+  .lore-hero-text {
+    font-size: 2.75rem;
+    top: 85px;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  section#lore {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .story-telling-container {
+    position: relative;
+    width: 100%;
+    height: 60vh;
+  }
+
+  .lore-grid-container {
+    position: relative;
+    width: 100%;
+    padding: 1.5rem;
+    gap: 1rem;
+  }
+
+  .story-telling-title {
+    position: relative;
+    bottom: auto;
+    margin-top: 1rem;
+    font-size: 1.75rem;
+  }
+
+  .lore-hero-text {
+    font-size: 2.5rem;
+    top: 80px;
+    position: relative;
+    margin-bottom: 2rem;
+  }
+}
+
+/* Mobile Breakpoints */
+@media screen and (max-width: 768px) {
+  section#lore {
+    height: auto;
+    min-height: 100vh;
+    padding: 2rem 0;
+  }
+
+  .story-telling-container {
+    position: relative;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: auto;
+    transform: none;
+    padding: 1rem;
+  }
+
+  .story-telling-container video {
+    width: 100%;
+    height: auto;
+    max-height: 40vh;
+    object-fit: contain;
+  }
+
+  .lore-grid-container {
+    position: relative;
+    right: 0;
+    width: 100%;
+    height: auto;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1rem;
+    transform: none;
+    margin-top: 1rem;
+  }
+
+  .lore-grid-item {
+    aspect-ratio: 16/9;
+    max-height: 200px;
+  }
+
+  .story-telling-title {
+    position: relative;
+    bottom: 0;
+    font-size: 1.5rem;
+    margin: 1rem 0;
+    padding: 0 1rem;
+  }
+
+  .lore-hero-text {
+    font-size: 2.25rem;
+    top: 70px;
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 390px) {
+  section#lore {
+    padding: 1.5rem 0;
+  }
+
+  .story-telling-container {
+    padding: 0.75rem;
+  }
+
+  .story-telling-container video {
+    max-height: 35vh;
+  }
+
+  .story-telling-title {
+    font-size: 1.25rem;
+    margin: 0.75rem 0;
+  }
+
+  .lore-grid-container {
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .lore-grid-item {
+    max-height: 180px;
+  }
+
+  .lore-hero-text {
+    font-size: 2rem;
+    top: 65px;
+    margin-bottom: 1rem;
+  }
+}
+
+/* Mobile 360px - Critical Grid Layout */
+@media screen and (max-width: 360px) {
+  section#lore {
+    position: relative;
+    height: auto;
+    min-height: 100vh;
+    padding: 1rem 0;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  section#lore .relative {
+    width: 100%;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .lore-grid-container {
+    position: fixed;
+    width: 150px;
+    height: 150px;
+    margin: 1rem auto;
+    display: grid;
+    grid-template-areas: 
+      "item1 item2"
+      "item3 item4";
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 0 !important;
+    padding: 0;
+    transform: none;
+  }
+
+  .lore-grid-item {
+    position: relative;
+    width: 90%;
+    height: 90%;
+    aspect-ratio: 1;
+    border-radius: 0.25rem;
+    transform: none !important;
+    transition: none !important;
+    margin: -0.5rem !important;
+    left: 5%;
+    top: 210%;
+
+  }
+
+  .lore-grid-item:nth-child(1) { grid-area: item1; }
+  .lore-grid-item:nth-child(2) { grid-area: item2; }
+  .lore-grid-item:nth-child(3) { grid-area: item3; }
+  .lore-grid-item:nth-child(4) { grid-area: item4; }
+
+  .lore-grid-item video {
+    transform: none !important;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Explicitly override hover states */
+  .lore-grid-item:hover,
+  .lore-grid-item:active,
+  .lore-grid-item:focus {
+    transform: none !important;
+    z-index: auto;
+  }
+
+  .lore-grid-item:hover video {
+    transform: none !important;
+  }
+
+  .story-telling-container {
+    position: relative;
+    width: 90vw;
+    margin: 1rem auto;
+    padding: 0.25rem;
+    transform: translateX(0%) translateY(0%) !important;
+  }
+
+  .story-telling-container video {
+    width: 100%;
+    height: auto;
+    max-height: 30vh !important;
+    object-fit: contain;
+  }
+
+  .story-telling-title {
+    width: 100%;
+    font-size: 0.575rem;
+    letter-spacing: 0.05em;
+    margin-top: 0.375rem;
+    text-align: center;
+  }
+
+  .lore-hero-text {
+    width: 100%;
+    font-size: 1.25rem;
+    margin: 1rem 0;
+    text-align: center;
+    letter-spacing: 0.08em;
+  }
+}
+
+/* Height-based Adjustments */
+@media screen and (max-height: 900px) {
+  .story-telling-title {
+    bottom: 8%;
+  }
+  .lore-hero-text {
+    top: 100px;
+  }
+}
+
+@media screen and (max-height: 800px) {
+  .story-telling-title {
+    bottom: 6%;
+  }
+  .lore-hero-text {
+    top: 90px;
+  }
+}
+
+@media screen and (max-height: 700px) {
+  .story-telling-title {
+    bottom: 4%;
+  }
+  .lore-hero-text {
+    top: 80px;
+  }
+}
+
+/* Combined Width and Height for Mobile Landscape */
+@media screen and (max-width: 844px) and (max-height: 390px),
+       (max-width: 812px) and (max-height: 375px),
+       (max-width: 640px) and (max-height: 360px) {
+  section#lore {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  section#lore .relative {
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .story-telling-container {
+    height: 100vh;
+    transform: none;
+  }
+
+  .lore-grid-container {
+    padding: 0.5rem;
+    gap: 0.375rem;
+    transform: none;
+  }
+
+  .story-telling-title {
+    position: absolute;
+    bottom: 5%;
+    font-size: 1rem;
+    transform: translateX(-50%);
+  }
+
+  .lore-hero-text {
+    position: relative;
+    top: 50px;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    transform: translateX(-50%);
   }
 } 

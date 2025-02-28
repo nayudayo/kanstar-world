@@ -71,20 +71,20 @@ const RoadmapSlideshow = () => {
   }, [currentSlide, isAnimating]);
 
   return (
-    <div className="w-full h-full flex flex-col items-center">
-      {/* Content Container - Full height for proper centering */}
-      <div className="w-full h-full flex items-center justify-between px-20">
+    <div className="roadmap-section">
+      {/* Content Container */}
+      <div className="roadmap-content">
         {/* Left side - Slideshow Container */}
-        <div className="flex flex-col items-center relative">
-          {/* Hero Text - Centered above slideshow */}
-          <h2 className="text-8xl font-bold text-white tracking-[0.2em] roadmap-title-glow absolute -top-20 left-1/2 -translate-x-1/2 whitespace-nowrap">
+        <div className="roadmap-left">
+          {/* Hero Text */}
+          <h2 className="roadmap-title">
             ROADMAP
           </h2>
 
-          <div className="relative w-[800px] h-[600px]">
+          <div className="roadmap-slideshow">
             {/* Previous Slide Preview */}
             <div 
-              className="absolute left-0 top-1/2 -translate-y-1/2 w-[200px] h-[200px] cursor-pointer opacity-30 hover:opacity-50 transition-opacity"
+              className="preview-slide"
               onClick={() => goToSlide(getPrevIndex(currentSlide))}
             >
               <Image
@@ -101,7 +101,7 @@ const RoadmapSlideshow = () => {
               <div
                 key={index}
                 id={`slide-${index}`}
-                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] transition-all duration-500"
+                className="current-slide"
                 style={{ 
                   opacity: index === currentSlide ? 1 : 0,
                   pointerEvents: index === currentSlide ? 'auto' : 'none'
@@ -119,7 +119,7 @@ const RoadmapSlideshow = () => {
 
             {/* Next Slide Preview */}
             <div 
-              className="absolute right-0 top-1/2 -translate-y-1/2 w-[200px] h-[200px] cursor-pointer opacity-30 hover:opacity-50 transition-opacity"
+              className="preview-slide"
               onClick={() => goToSlide(getNextIndex(currentSlide))}
             >
               <Image
@@ -132,63 +132,32 @@ const RoadmapSlideshow = () => {
             </div>
           </div>
 
-          {/* Navigation Dots - Removed bottom margin */}
-          <div className="flex gap-4">
+          {/* Navigation Dots - Removed any flex or spacing classes */}
+          <div className="roadmap-nav">
             {ROADMAP_IMAGES.map((_, index) => (
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  index === currentSlide 
-                    ? 'bg-[#00ffff] scale-125 shadow-[0_0_10px_#00ffff]' 
-                    : 'bg-white/50 hover:bg-white/70'
-                }`}
+                className={`nav-dot ${index === currentSlide ? 'active' : ''}`}
                 aria-label={`Go to slide ${index + 1}`}
               />
             ))}
           </div>
         </div>
 
-        {/* Right side - Ship Image - Adjusted position and scale */}
-        <div className="relative w-[800px] h-[600px]">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="relative w-[700px] h-[700px] ship-glow -translate-y-10">
-              <Image
-                src="/images/assets/ship/ship.png"
-                alt="Kanstar Ship"
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
+        {/* Right side - Ship Image */}
+        <div className="roadmap-right">
+          <div className="ship-container">
+            <Image
+              src="/images/assets/ship/ship.png"
+              alt="Kanstar Ship"
+              fill
+              className="object-contain"
+              priority
+            />
           </div>
         </div>
       </div>
-
-      {/* Add glow effect styles */}
-      <style jsx>{`
-        .roadmap-title-glow {
-          text-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
-                      0 0 40px rgba(255, 255, 255, 0.6),
-                      0 0 60px rgba(255, 255, 255, 0.4),
-                      0 0 80px rgba(255, 255, 255, 0.2);
-        }
-
-        .ship-glow {
-          filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.3))
-                  drop-shadow(0 0 40px rgba(0, 255, 255, 0.2));
-          animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(-40px);
-          }
-          50% {
-            transform: translateY(-60px);
-          }
-        }
-      `}</style>
     </div>
   );
 };

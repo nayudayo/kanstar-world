@@ -72,6 +72,7 @@ gifs_to_convert=(
     "gif/lore/lore-4.gif"
     "gif/lore/story-telling.gif"
     "planet.gif"
+    "token-section/token.GIF"
 )
 
 # Convert all GIFs

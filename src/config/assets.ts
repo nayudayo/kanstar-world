@@ -45,11 +45,18 @@ export const ASSET_MANIFEST = {
       mp4: '/videos/token-section/token.GIF.mp4',
       fallback: '/images/token-section/token.GIF',
       alt: 'Token Animation'
+    },
+    FOOTER: {
+      webm: '/videos/assets/footer.gif.webm',
+      mp4: '/videos/assets/footer.gif.mp4',
+      fallback: '/images/assets/footer.gif',
+      alt: 'Footer Animation'
     }
   },
   IMAGES: {
     HEROES: '/images/assets/kanstar-heroes.png',
     SHIP: '/images/assets/ship/ship.png',
-    DEBRIS: '/images/assets/debris.PNG'
+    DEBRIS: '/images/assets/debris.PNG',
+    WORMHOLE: '/images/assets/wormhole-section/wormhole.PNG'
   }
 }; 

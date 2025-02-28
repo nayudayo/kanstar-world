@@ -1,0 +1,230 @@
+/* Roadmap Slideshow Styles
+   Common Breakpoints:
+   Mobile Portrait: 360x640
+   Desktop: ≥1536px
+*/
+
+/* Desktop Breakpoint (≥1536px) */
+@media screen and (min-width: 1536px) {
+  /* Common Item Styles */
+  .roadmap-item {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
+  }
+
+  /* Content Container */
+  .roadmap-item > div:first-child {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.5rem;
+  }
+
+  /* Image Element */
+  .roadmap-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transform: scale(1.5);
+    transform-origin: center;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Hover Effects */
+  .roadmap-item:hover {
+    transform: scale(2.2);
+    z-index: 999;
+  }
+
+  .roadmap-item:hover img {
+    transform: scale(1.7);
+  }
+}
+
+/* Common styles across breakpoints */
+.roadmap-section {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.roadmap-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.roadmap-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.roadmap-title {
+  font-size: 5rem;
+  font-weight: bold;
+  color: white;
+  letter-spacing: 0.2em;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
+               0 0 40px rgba(255, 255, 255, 0.6),
+               0 0 60px rgba(255, 255, 255, 0.4),
+               0 0 80px rgba(255, 255, 255, 0.2);
+  margin-bottom: 2rem;
+  white-space: nowrap;
+}
+
+.roadmap-slideshow {
+  position: relative;
+  width: 800px;
+  height: 600px;
+}
+
+.preview-slide {
+  position: absolute;
+  top: 50%;
+  width: 200px;
+  height: 200px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  opacity: 0.3;
+  transition: opacity 0.3s;
+}
+
+.preview-slide:hover {
+  opacity: 0.5;
+}
+
+.preview-slide:first-of-type {
+  left: 0;
+}
+
+.preview-slide:last-of-type {
+  right: 0;
+}
+
+.current-slide {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
+  transition: all 0.5s;
+}
+
+.roadmap-nav {
+  display: flex !important;
+  gap: 1rem !important;
+  margin-top: 0.5rem !important;
+  position: relative;
+  z-index: 10;
+}
+
+.nav-dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5) ;
+  transition: all 0.3s;
+}
+
+.nav-dot:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.nav-dot.active {
+  background: #00ffff;
+  transform: scale(1.25);
+  box-shadow: 0 0 10px #00ffff;
+}
+
+.roadmap-right {
+  position: relative;
+  width: 800px;
+  height: 600px;
+}
+
+.ship-container {
+  position: relative;
+  width: 700px;
+  height: 700px;
+  filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.3))
+          drop-shadow(0 0 40px rgba(0, 255, 255, 0.2));
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(-40px); }
+  50% { transform: translateY(-60px); }
+}
+
+/* Mobile Breakpoint (≤360px) */
+@media screen and (max-width: 360px) {
+  .roadmap-content {
+    flex-direction: column;
+    padding: 1rem;
+    gap: 2rem;
+  }
+
+  .roadmap-left {
+    width: 100%;
+  }
+
+  .roadmap-title {
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .roadmap-slideshow {
+    width: 100%;
+    height: 100px;
+    max-width: 300px;
+  }
+
+  .preview-slide {
+    width: 80px;
+    height: 80px;
+  }
+
+  .current-slide {
+    width: 250px;
+    height: 250px;
+  }
+
+  .roadmap-nav {
+    margin-top: 1rem !important ;
+  }
+
+  .nav-dot {
+    width: 0.35rem;
+    height: 0.35rem;
+
+  }
+
+  .roadmap-right {
+    width: 100%;
+    height: 200px;
+  }
+
+  .ship-container {
+    width: 250px;
+    height: 250px;
+    transform: translateX(40%) translateY(-70%) !important;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(-10px); }
+    50% { transform: translateY(-20px); }
+  }
+} 

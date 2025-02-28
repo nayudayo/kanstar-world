@@ -15,6 +15,10 @@ import { ASSET_MANIFEST } from "../config/assets";
 import { usePerformanceMonitoring } from "../hooks/usePerformanceMonitoring";
 import { scrollOptimizer } from "../utils/scrollOptimization";
 import "../styles/lore-grid.css";
+import "../styles/nft-showcase.css";
+import "../styles/titlepage-hero.css";
+import "../styles/roadmap-slideshow.css";
+import "../styles/kanstar-token-section.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -338,16 +342,7 @@ export default function Home() {
               <div className="max-w-[1920px] mx-auto px-8 xl:px-6 lg:px-4 md:px-4 sm:px-2 relative">
                 {/* Planet Container - Base size for large screens */}
                 <div className="absolute left-[30%] top-[50%] -translate-x-1/2 -translate-y-1/2">
-                  <div className={`
-                    relative 
-                    w-[1000px] h-[1000px]
-                    2xl:w-[1000px] 2xl:h-[1000px]
-                    xl:w-[800px] xl:h-[800px]
-                    lg:w-[600px] lg:h-[600px]
-                    md:w-[400px] md:h-[400px]
-                    sm:w-[300px] sm:h-[300px]
-                    transition-all duration-300 ease-in-out
-                  `}>
+                  <div className="relative transition-all duration-300 ease-in-out planet-container">
                     <Image
                       src={ASSET_MANIFEST.VIDEOS.PLANET.fallback}
                       alt={ASSET_MANIFEST.VIDEOS.PLANET.alt}
@@ -359,33 +354,11 @@ export default function Home() {
                 </div>
 
                 {/* Title Content - Right aligned with responsive text */}
-                <div className={`
-                  text-right relative z-10
-                  ml-auto
-                  w-[50%]
-                  xl:w-[60%]
-                  lg:w-[70%]
-                  md:w-full md:text-center
-                `}>
-                  <h1 className={`
-                    text-white font-bold tracking-[0.2em] title-glow
-                    text-[8rem]
-                    2xl:text-[8rem]
-                    xl:text-[6rem]
-                    lg:text-7xl
-                    md:text-6xl
-                    sm:text-4xl
-                  `}>
+                <div className="title-content">
+                  <h1>
                     KANSTAR<br />WORLD
                   </h1>
-                  <p className={`
-                    text-[#FFD700] tracking-[0.3em] subtitle-glow
-                    text-2xl mt-6
-                    xl:text-xl xl:mt-5
-                    lg:text-lg lg:mt-4
-                    md:text-base md:mt-3
-                    sm:text-sm sm:mt-2
-                  `}>
+                  <p>
                     THE ULTIMATE COSMIC DOGGO
                   </p>
                 </div>
@@ -393,26 +366,8 @@ export default function Home() {
 
               {/* Collection Button - Responsive positioning and sizing */}
               <div className="absolute max-w-[1920px] w-full right-0 left-0 mx-auto px-8 xl:px-6 lg:px-4 md:px-4 sm:px-2">
-                <div className={`
-                  flex justify-end
-                  ml-auto
-                  w-[50%]
-                  xl:w-[60%]
-                  lg:w-[70%]
-                  md:w-full md:justify-center
-                `}>
-                  <button className={`
-                    backdrop-blur-md bg-black/30 text-white 
-                    hover:bg-black/40 transition-all duration-300 
-                    tracking-[0.2em] font-medium border-[2px] 
-                    border-white collection-button-glow
-                    px-12 py-3 text-lg translate-y-32
-                    xl:px-10 xl:py-2.5 xl:text-base xl:translate-y-20
-                    lg:px-8 lg:py-2 lg:translate-y-16
-                    md:px-6 md:translate-y-12
-                    sm:px-4 sm:text-sm sm:translate-y-8
-                    relative z-10
-                  `}>
+                <div className="button-container">
+                  <button>
                     CHECK COLLECTION
                   </button>
                 </div>
@@ -437,6 +392,18 @@ export default function Home() {
             className="object-cover rotate-180"
             priority
           />
+          {/* Add Wormhole Background */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="relative w-[800px] h-[800px] transform scale-150 animate-spin-slow">
+              <Image
+                src={ASSET_MANIFEST.IMAGES.WORMHOLE}
+                alt="Wormhole Background"
+                fill
+                className="object-contain opacity-80"
+                priority
+              />
+            </div>
+          </div>
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="heroes-container relative w-[1300px] h-[600px]">
               <Image
@@ -460,9 +427,12 @@ export default function Home() {
             priority
           />
           <div className="absolute inset-0">
-            <div className="relative w-full h-full flex items-center justify-center">
+            <div className="relative w-full h-full">
+              {/* Hero Text - Architect's Log */}
+              <h1 className="lore-hero-text title-glow">Architect&apos;s Log</h1>
+              
               {/* Story Telling Container - Left Side */}
-              <div className="story-telling-container absolute left-[25%] top-1/2 -translate-x-1/2 -translate-y-1/2 w-[40vw] h-[40vw] max-w-[600px] max-h-[600px] min-w-[300px] min-h-[300px] flex items-center justify-center z-20 flex-col">
+              <div className="story-telling-container">
                 <OptimizedVideo
                   webm={ASSET_MANIFEST.VIDEOS.LORE_STORYTELLING.webm}
                   mp4={ASSET_MANIFEST.VIDEOS.LORE_STORYTELLING.mp4}
@@ -474,7 +444,7 @@ export default function Home() {
               </div>
 
               {/* Lore Grid Container - Right Side */}
-              <div className="relative w-[40vw] h-[40vw] max-w-[600px] max-h-[600px] min-w-[300px] min-h-[300px] ml-auto mr-[10%] lg:mr-[20%] grid grid-cols-2 gap-8">
+              <div className="lore-grid-container">
                 {[1, 2, 3, 4].map((num, index) => {
                   const videoKey = `LORE_${num}` as keyof typeof ASSET_MANIFEST.VIDEOS;
                   return (
@@ -539,16 +509,16 @@ export default function Home() {
         </section>
 
         {/* Fifth Section - Token Section */}
-        <section id="token" ref={addToRefs} className="relative h-screen w-full">
+        <section id="token" ref={addToRefs} className="token-section">
           <Image
             src="/images/backgrounds/cosmic-background.png"
             alt="Cosmic Background"
             fill
-            className="object-cover -scale-x-100"
+            className="token-background"
             priority
           />
           {/* Top Debris */}
-          <div className="absolute top-0 left-0 w-full h-[800px] -mt-[400px]">
+          <div className="token-debris top">
             <Image
               src={ASSET_MANIFEST.IMAGES.DEBRIS}
               alt="Space Debris Top"
@@ -556,12 +526,12 @@ export default function Home() {
               className="object-contain"
             />
           </div>
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <div className="token-content">
             {/* Token Purchase Container */}
-            <div className="flex items-center justify-between w-full max-w-[1920px] px-20">
+            <div className="token-container">
               {/* Left Kanstar Container */}
-              <div className="relative w-[800px] h-[800px] token-container">
-                <div className="absolute inset-0">
+              <div className="token-kanstar">
+                <div className="token-kanstar-video">
                   <OptimizedVideo
                     webm={ASSET_MANIFEST.VIDEOS.TOKEN.webm}
                     mp4={ASSET_MANIFEST.VIDEOS.TOKEN.mp4}
@@ -573,11 +543,11 @@ export default function Home() {
               </div>
 
               {/* Center Text */}
-              <div className="flex flex-col items-center gap-4 mx-10">
-                <h2 className="text-white text-6xl font-bold tracking-[0.2em] title-glow text-center -mb-20">
+              <div className="token-center">
+                <h2 className="token-title">
                   PURCHASE
                 </h2>
-                <div className="relative w-[400px] h-[400px] my-2">
+                <div className="token-image">
                   <Image
                     src="/images/assets/$kanstar.PNG"
                     alt="$KANSTAR Token"
@@ -586,32 +556,32 @@ export default function Home() {
                     priority
                   />
                 </div>
-                <h2 className="text-white text-6xl font-bold tracking-[0.2em] title-glow text-center -mt-20">
+                <h2 className="token-title">
                   TOKEN
                 </h2>
               </div>
 
               {/* Right Kanstar Container */}
-              <div className="relative w-[800px] h-[800px] token-container">
-                <div className="absolute inset-0">
+              <div className="token-kanstar">
+                <div className="token-kanstar-video flipped">
                   <OptimizedVideo
                     webm={ASSET_MANIFEST.VIDEOS.TOKEN.webm}
                     mp4={ASSET_MANIFEST.VIDEOS.TOKEN.mp4}
                     fallbackImage={ASSET_MANIFEST.VIDEOS.TOKEN.fallback}
                     alt={ASSET_MANIFEST.VIDEOS.TOKEN.alt}
-                    className="object-contain -scale-x-100"
+                    className="object-contain"
                   />
                 </div>
               </div>
             </div>
           </div>
           {/* Bottom Debris */}
-          <div className="absolute -bottom-[400px] left-0 w-full h-[800px] z-[100]">
+          <div className="token-debris bottom">
             <Image
               src={ASSET_MANIFEST.IMAGES.DEBRIS}
               alt="Space Debris Bottom"
               fill
-              className="object-contain rotate-180"
+              className="object-contain"
             />
           </div>
         </section>

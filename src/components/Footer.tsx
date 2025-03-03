@@ -3,10 +3,11 @@ import Image from 'next/image';
 import OptimizedVideo from './OptimizedVideo';
 import { ASSET_MANIFEST } from '../config/assets';
 import '../styles/footer.css';
+import { forwardRef } from 'react';
 
-const Footer = () => {
+const Footer = forwardRef<HTMLElement>((props, ref) => {
   return (
-    <footer className="footer">
+    <footer ref={ref} className="footer">
       <div className="footer-container footer-grid">
         {/* GIF Column */}
         <div className="footer-video">
@@ -45,6 +46,19 @@ const Footer = () => {
               <Image
                 src="/images/assets/social-icons/icon TG.png"
                 alt="Telegram"
+                fill
+                className="object-contain"
+              />
+            </Link>
+            <Link 
+              href="https://twitter.com/KanstarWorld" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="social-icon"
+            >
+              <Image
+                src="/images/assets/social-icons/icon X.png"
+                alt="X (Twitter)"
                 fill
                 className="object-contain"
               />
@@ -115,6 +129,8 @@ const Footer = () => {
       </div>
     </footer>
   );
-};
+});
+
+Footer.displayName = 'Footer';
 
 export default Footer; 

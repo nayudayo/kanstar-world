@@ -127,13 +127,13 @@
   }
 }
 
-/* Mobile Breakpoint (≤360px) */
-@media screen and (max-width: 360px) {
+@media screen and (max-width: 415px) {
   .token-container {
     grid-template-columns: 1fr;
     grid-template-rows: 250px auto 250px;
     padding: 1rem;
     gap: 0;  /* Remove gap between elements */
+    transform: translateY(10%);
   }
 
   .token-kanstar {
@@ -150,7 +150,7 @@
   }
 
   .token-title {
-    font-size: 2rem;
+    font-size: 2.5rem;
     margin-bottom: -8rem;  /* Increased negative margin to pull elements closer */
   }
 
@@ -160,19 +160,203 @@
   }
 
   .token-image {
-    width: 200px;
+    width: 250px;
+    height: 250px;
+    margin: 2rem;  /* Remove margin since we're using negative margins on titles */
+    transform: scale(1.2);  /* Slightly reduce the image size */
+  }
+
+  /* Position adjustments for kanstars */
+  .token-kanstar:first-child {
+    display: none;
+  }
+
+  .token-kanstar:last-child {
+    transform: translateX(30%) translateY(20%) scale(1.2) rotate(20deg) !important;
+  }
+
+  .token-debris {
+    height: 400px;
+  }
+
+  .token-debris.top {
+    margin-top: -200px;
+  }
+
+  .token-debris.bottom {
+    bottom: -200px;
+  }
+} 
+
+@media screen and (max-width: 391px) {
+  .token-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: 250px auto 250px;
+    padding: 1rem;
+    gap: 0;  /* Remove gap between elements */
+    transform: translateY(10%);
+  }
+
+  .token-kanstar {
+    width: 200px;  /* Reduced size */
     height: 200px;
+    margin: 0 auto;  /* Center horizontally */
+  }
+
+  .token-center {
+    margin: 1rem 0;
+    position: relative;
+    z-index: 2;
+    gap: 0;  /* Remove gap between grid items */
+  }
+
+  .token-title {
+    font-size: 2.5rem;
+    margin-bottom: -8rem;  /* Increased negative margin to pull elements closer */
+  }
+
+  .token-title:last-child {
+    margin-top: -9rem;  /* Pull up the "TOKEN" text */
+    margin-bottom: 0;  /* Remove bottom margin for last title */
+  }
+
+  .token-image {
+    width: 250px;
+    height: 250px;
+    margin: 2rem;  /* Remove margin since we're using negative margins on titles */
+    transform: scale(1.2);  /* Slightly reduce the image size */
+  }
+
+  /* Position adjustments for kanstars */
+  .token-kanstar:first-child {
+    display: none;
+  }
+
+  .token-kanstar:last-child {
+    transform: translateX(30%) translateY(20%) scale(1.2) rotate(20deg) !important;
+  }
+
+  .token-debris {
+    height: 400px;
+  }
+
+  .token-debris.top {
+    margin-top: -200px;
+  }
+
+  .token-debris.bottom {
+    bottom: -200px;
+  }
+} 
+
+@media screen and (max-width: 376px) {
+  .token-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: 250px auto 250px;
+    padding: 1rem;
+    gap: 0;  /* Remove gap between elements */
+    transform: translateY(10%);
+  }
+
+  .token-kanstar {
+    width: 200px;  /* Reduced size */
+    height: 200px;
+    margin: 0 auto;  /* Center horizontally */
+  }
+
+  .token-center {
+    margin: 1rem 0;
+    position: relative;
+    z-index: 2;
+    gap: 0;  /* Remove gap between grid items */
+  }
+
+  .token-title {
+    font-size: 2.5rem;
+    margin-bottom: -8rem;  /* Increased negative margin to pull elements closer */
+  }
+
+  .token-title:last-child {
+    margin-top: -9rem;  /* Pull up the "TOKEN" text */
+    margin-bottom: 0;  /* Remove bottom margin for last title */
+  }
+
+  .token-image {
+    width: 250px;
+    height: 250px;
+    margin: 2rem;  /* Remove margin since we're using negative margins on titles */
+    transform: scale(1.2);  /* Slightly reduce the image size */
+  }
+
+  /* Position adjustments for kanstars */
+  .token-kanstar:first-child {
+    display: none;
+  }
+
+  .token-kanstar:last-child {
+    transform: translateX(30%) translateY(20%) scale(1.2) rotate(20deg) !important;
+  }
+
+  .token-debris {
+    height: 400px;
+  }
+
+  .token-debris.top {
+    margin-top: -200px;
+  }
+
+  .token-debris.bottom {
+    bottom: -200px;
+  }
+} 
+
+/* Mobile Breakpoint (≤360px) */
+@media screen and (max-width: 360px) {
+  .token-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: 250px auto 250px;
+    padding: 1rem;
+    gap: 0;  /* Remove gap between elements */
+    transform: translateY(10%);
+  }
+
+  .token-kanstar {
+    width: 200px;  /* Reduced size */
+    height: 200px;
+    margin: 0 auto;  /* Center horizontally */
+  }
+
+  .token-center {
+    margin: 1rem 0;
+    position: relative;
+    z-index: 2;
+    gap: 0;  /* Remove gap between grid items */
+  }
+
+  .token-title {
+    font-size: 2.5rem;
+    margin-bottom: -8rem;  /* Increased negative margin to pull elements closer */
+  }
+
+  .token-title:last-child {
+    margin-top: -9rem;  /* Pull up the "TOKEN" text */
+    margin-bottom: 0;  /* Remove bottom margin for last title */
+  }
+
+  .token-image {
+    width: 250px;
+    height: 250px;
     margin: 2rem;  /* Remove margin since we're using negative margins on titles */
     transform: scale(0.8);  /* Slightly reduce the image size */
   }
 
   /* Position adjustments for kanstars */
   .token-kanstar:first-child {
-    transform: translateY(60%);  /* Move down */
+    display: none;
   }
 
   .token-kanstar:last-child {
-    transform: translateY(-50%);  /* Move up */
+    transform: translateX(30%) translateY(20%) scale(1.2) rotate(20deg) !important;
   }
 
   .token-debris {

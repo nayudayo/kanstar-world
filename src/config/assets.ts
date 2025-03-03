@@ -1,7 +1,9 @@
 // Asset manifest for the entire application
 export const ASSET_MANIFEST = {
   CRITICAL: {
-    BACKGROUND: '/images/backgrounds/cosmic-background.png',
+    BACKGROUND: '/images/backgrounds/background_2.png',
+    BACKGROUND_2: '/images/backgrounds/background_2.png',
+    BACKGROUND_3: '/images/backgrounds/background_2.png',
   },
   VIDEOS: {
     PLANET: {

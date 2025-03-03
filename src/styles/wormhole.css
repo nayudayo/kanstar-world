@@ -1,0 +1,177 @@
+/* Wormhole and Text Styles */
+.wormhole-section {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.wormhole-title {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 3.5rem;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  z-index: 10;
+  width: 100%;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.wormhole-subtitle {
+  position: absolute;
+  bottom: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.75rem;
+  color: white;
+  text-align: center;
+  z-index: 10;
+  width: 100%;
+  letter-spacing: 0.05em;
+}
+
+.wormhole-container {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wormhole-image {
+  position: relative;
+  width: 800px;
+  height: 800px;
+  transform: scale(1.5);
+  animation: spin 60s linear infinite;
+}
+
+/* Title glow effect */
+.title-glow {
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
+              0 0 40px rgba(255, 255, 255, 0.6),
+              0 0 60px rgba(255, 255, 255, 0.4);
+}
+
+/* Subtitle glow effect */
+.subtitle-glow {
+  text-shadow: 0 0 15px rgba(255, 215, 0, 0.8),
+              0 0 30px rgba(255, 215, 0, 0.6),
+              0 0 45px rgba(255, 215, 0, 0.4);
+}
+
+/* Wormhole spin animation */
+@keyframes spin {
+  from {
+    transform: scale(1.5) rotate(0deg);
+  }
+  to {
+    transform: scale(1.5) rotate(360deg);
+  }
+}
+
+/* Desktop Breakpoint (≥1536px) */
+@media screen and (min-width: 1536px) {
+  .wormhole-title {
+    font-size: 4rem;
+  }
+
+  .wormhole-subtitle {
+    font-size: 2rem;
+  }
+
+  .wormhole-image {
+    width: 900px;
+    height: 900px;
+  }
+}
+
+@media screen and (max-width: 415px) {
+  .wormhole-title {
+    top: 15%;
+    font-size: 2.5rem;
+    padding: 0 1rem;
+  }
+
+  .wormhole-subtitle {
+    bottom: 15%;
+    font-size: 1rem;
+    padding: 0 1.5rem;
+    line-height: 1.5;
+  }
+
+  .wormhole-image {
+    width: 300px;
+    height: 300px;
+    margin-top: 20%;
+  }
+}
+
+@media screen and (max-width: 391px) {
+  .wormhole-title {
+    top: 15%;
+    font-size: 2.5rem;
+    padding: 0 1rem;
+  }
+
+  .wormhole-subtitle {
+    bottom: 15%;
+    font-size: 1rem;
+    padding: 0 1.5rem;
+    line-height: 1.5;
+  }
+
+  .wormhole-image {
+    width: 300px;
+    height: 300px;
+    margin-top: 20%;
+  }
+}
+
+@media screen and (max-width: 376px) {
+  .wormhole-title {
+    top: 15%;
+    font-size: 2.5rem;
+    padding: 0 1rem;
+  }
+
+  .wormhole-subtitle {
+    bottom: 15%;
+    font-size: 1rem;
+    padding: 0 1.5rem;
+    line-height: 1.5;
+  }
+
+  .wormhole-image {
+    width: 300px;
+    height: 300px;
+    margin-top: 20%;
+  }
+}
+
+/* Mobile Breakpoint (≤360px) */
+@media screen and (max-width: 360px) {
+  .wormhole-title {
+    top: 12%;
+    font-size: 2.5rem;
+    padding: 0 1rem;
+  }
+
+  .wormhole-subtitle {
+    bottom: 10%;
+    font-size: 1rem;
+    padding: 0 1.5rem;
+    line-height: 1.5;
+  }
+
+  .wormhole-image {
+    width: 300px;
+    height: 300px;
+    margin-top: 20%;
+  }
+
+} 

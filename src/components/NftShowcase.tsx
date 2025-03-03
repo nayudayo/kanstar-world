@@ -1,16 +1,25 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, memo } from 'react';
 import Image from 'next/image';
 import { gsap } from 'gsap';
 import '../styles/nft-showcase.css';
 
-const NftShowcase = () => {
-  const [selectedNft, setSelectedNft] = useState<string | null>(null);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const sliderRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<Array<HTMLDivElement | null>>([]);
-  const [images, setImages] = useState<number[]>(Array.from({ length: 12 }, (_, i) => i + 1));
+// Memoized RarityMarquee component
+const RarityMarquee = memo(({ rarity, title, furs, color }: { rarity: string; title: string; furs: string[]; color: string }) => (
+  <div className={`rarity-marquee ${rarity}`}>
+    {/* Duplicate items for seamless loop */}
+    {[...Array(3)].map((_, i) => (
+      <div key={`${rarity}-${i}`} className="rarity-marquee-item" style={{ color }}>
+        <strong>{title}:</strong>&nbsp;{furs.join(', ')}
+      </div>
+    ))}
+  </div>
+));
 
-  // Rarity data for marquee
+RarityMarquee.displayName = 'RarityMarquee';
+
+// Memoized RaritySection component
+const RaritySection = memo(() => {
+  // Move rarityData inside this component since it's static
   const rarityData = {
     legendary: {
       title: 'Legendary',
@@ -39,11 +48,34 @@ const NftShowcase = () => {
     }
   };
 
+  return (
+    <div className="rarity-marquee-section">
+      {Object.entries(rarityData).map(([rarity, data]) => (
+        <RarityMarquee
+          key={rarity}
+          rarity={rarity}
+          title={data.title}
+          furs={data.furs}
+          color={data.color}
+        />
+      ))}
+    </div>
+  );
+});
+
+RaritySection.displayName = 'RaritySection';
+
+const NftShowcase = () => {
+  const [selectedNft, setSelectedNft] = useState<string | null>(null);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<Array<HTMLDivElement | null>>([]);
+  const [images, setImages] = useState<number[]>(Array.from({ length: 12 }, (_, i) => i + 1));
+
   useEffect(() => {
     let interval: NodeJS.Timeout;
     
     const animateCards = () => {
-      // Create new image order
       const newImages = [...images];
       const lastImage = newImages.pop()!;
       newImages.unshift(lastImage);
@@ -99,21 +131,10 @@ const NftShowcase = () => {
     cardsRef.current[index] = el;
   };
 
-  const RarityMarquee = ({ rarity, title, furs, color }: { rarity: string; title: string; furs: string[]; color: string }) => (
-    <div className={`rarity-marquee ${rarity}`}>
-      {/* Duplicate items for seamless loop */}
-      {[...Array(3)].map((_, i) => (
-        <div key={`${rarity}-${i}`} className="rarity-marquee-item" style={{ color }}>
-          <strong>{title}:</strong>&nbsp;{furs.join(', ')}
-        </div>
-      ))}
-    </div>
-  );
-
   return (
     <div className="nft-showcase">
       <Image
-        src="/images/backgrounds/cosmic-background.png"
+        src="/images/backgrounds/background_2.png"
         alt="Cosmic Background Flipped"
         fill
         className="object-cover -scale-x-100 -scale-y-100"
@@ -179,18 +200,8 @@ const NftShowcase = () => {
           </div>
         </div>
 
-        {/* Mobile Rarity Marquee Section */}
-        <div className="rarity-marquee-section">
-          {Object.entries(rarityData).map(([rarity, data]) => (
-            <RarityMarquee
-              key={rarity}
-              rarity={rarity}
-              title={data.title}
-              furs={data.furs}
-              color={data.color}
-            />
-          ))}
-        </div>
+        {/* Mobile Rarity Marquee Section - Now using memoized component */}
+        <RaritySection />
       </div>
       
       {/* NFT Carousel Container */}

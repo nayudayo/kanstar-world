@@ -8,7 +8,6 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import NftShowcase from "../components/NftShowcase";
 import RoadmapSlideshow from "../components/RoadmapSlideshow";
-import Sidebar from "../components/Sidebar";
 import LoadingScreen from "../components/LoadingScreen";
 import OptimizedVideo from "../components/OptimizedVideo";
 import { ASSET_MANIFEST } from "../config/assets";
@@ -19,6 +18,7 @@ import "../styles/nft-showcase.css";
 import "../styles/titlepage-hero.css";
 import "../styles/roadmap-slideshow.css";
 import "../styles/kanstar-token-section.css";
+import "../styles/wormhole.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -94,7 +94,7 @@ export default function Home() {
     }, 1000);
   };
 
-  // Initialize all GSAP animations
+  // Initialize GSAP animations
   const initializeAnimations = () => {
     if (!containerRef.current) return;
 
@@ -270,6 +270,39 @@ export default function Home() {
           });
         }
       });
+
+      // Heroes Animation
+      if (heroesRef.current) {
+        // Create the timeline but don't play it yet
+        heroesTimelineRef.current = gsap.timeline({ paused: true });
+        
+        // Set initial state
+        gsap.set(heroesRef.current.querySelector('.heroes-container'), {
+          opacity: 0,
+          scale: 0.5,
+          filter: 'blur(15px)',
+          y: 50,
+          transformOrigin: "center center"
+        });
+
+        // Define the animation sequence
+        heroesTimelineRef.current
+          .to(heroesRef.current.querySelector('.heroes-container'), {
+            opacity: 1,
+            scale: 1,
+            filter: 'blur(0px)',
+            y: 0,
+            duration: 0.8,
+            ease: "power2.out"
+          })
+          .to(heroesRef.current.querySelector('.heroes-container'), {
+            scale: 1.05,
+            duration: 0.4,
+            ease: "power1.inOut",
+            yoyo: true,
+            repeat: 1
+          });
+      }
     }, containerRef);
 
     return () => ctx.revert();
@@ -286,7 +319,7 @@ export default function Home() {
             // When entering view, add a delay before playing
             setTimeout(() => {
               heroesTimelineRef.current?.play();
-            }, 200); // 800ms delay
+            }, 200);
           } else {
             // When leaving view, reverse the animation
             if (entry.boundingClientRect.top > 0) {
@@ -307,7 +340,7 @@ export default function Home() {
         });
       },
       {
-        threshold: 0.6, // Trigger when 60% visible instead of 30%
+        threshold: 0.6,
       }
     );
 
@@ -315,6 +348,29 @@ export default function Home() {
 
     return () => observer.disconnect();
   }, [contentVisible]);
+
+  // Add state for sidebar visibility
+  const [showSidebar, setShowSidebar] = useState(true);
+  const footerRef = useRef<HTMLElement>(null);
+
+  // Add intersection observer for footer
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Hide sidebar when footer is visible, show when not visible
+        setShowSidebar(!entry.isIntersecting);
+      },
+      {
+        threshold: 0.1 // Trigger when 10% of footer is visible
+      }
+    );
+
+    if (footerRef.current) {
+      observer.observe(footerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <>
@@ -324,7 +380,6 @@ export default function Home() {
         className={`relative bg-black transition-opacity duration-1000 ${contentVisible ? 'opacity-100' : 'opacity-0'}`}
       >
         <Navbar ref={navRef} />
-        <Sidebar />
 
         {/* First Section - Landing Page */}
         <section ref={addToRefs} className="relative h-screen w-full pt-[80px]">
@@ -376,6 +431,55 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Update sidebar with conditional rendering and transition */}
+        <div 
+          className={`fixed bottom-8 left-3 z-[999] flex flex-col gap-4 transition-all duration-300 ease-in-out ${
+            showSidebar 
+              ? 'opacity-100 translate-x-0' 
+              : 'opacity-0 -translate-x-full'
+          }`}
+        >
+          <a 
+            href="https://t.me/KanstarWorld" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="transition-transform hover:scale-110"
+          >
+            <Image
+              src="/images/assets/social-icons/icon TG.png"
+              alt="Telegram"
+              width={30}
+              height={30}
+            />
+          </a>
+          <a 
+            href="https://discord.gg/kanstarworld" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="transition-transform hover:scale-110"
+          >
+            <Image
+              src="/images/assets/social-icons/icon DC.png"
+              alt="Discord"
+              width={30}
+              height={30}
+            />
+          </a>
+          <a 
+            href="https://twitter.com/KanstarWorld" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="transition-transform hover:scale-110"
+          >
+            <Image
+              src="/images/assets/social-icons/icon X.png"
+              alt="X (Twitter)"
+              width={30}
+              height={30}
+            />
+          </a>
+        </div>
+
         {/* Second Section - Heroes Animation */}
         <section 
           id="heroes" 
@@ -383,7 +487,7 @@ export default function Home() {
             addToRefs(el);
             if (el) heroesRef.current = el;
           }} 
-          className="relative h-screen w-full overflow-hidden"
+          className="wormhole-section"
         >
           <Image
             src={ASSET_MANIFEST.CRITICAL.BACKGROUND}
@@ -392,9 +496,13 @@ export default function Home() {
             className="object-cover rotate-180"
             priority
           />
-          {/* Add Wormhole Background */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="relative w-[800px] h-[800px] transform scale-150 animate-spin-slow">
+          
+          <h2 className="wormhole-title title-glow">
+            COSMIC GUARDIANS
+          </h2>
+          
+          <div className="wormhole-container">
+            <div className="wormhole-image">
               <Image
                 src={ASSET_MANIFEST.IMAGES.WORMHOLE}
                 alt="Wormhole Background"
@@ -404,8 +512,10 @@ export default function Home() {
               />
             </div>
           </div>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="heroes-container relative w-[1300px] h-[600px]">
+          
+          {/* Heroes Container with animation class */}
+          <div className="heroes-container absolute inset-0 flex items-center justify-center">
+            <div className="relative w-[1300px] h-[600px] xl:w-[1400px] xl:h-[650px] sm:w-full sm:h-auto sm:max-w-[320px]">
               <Image
                 src={ASSET_MANIFEST.IMAGES.HEROES}
                 alt="Kanstar Heroes"
@@ -415,6 +525,10 @@ export default function Home() {
               />
             </div>
           </div>
+
+          <p className="wormhole-subtitle subtitle-glow">
+            Ancient Protectors of the Quantum Realm
+          </p>
         </section>
 
         {/* Third Section - Lore Section */}
@@ -497,7 +611,7 @@ export default function Home() {
         {/* Fourth Section - Roadmap */}
         <section id="roadmap" ref={addToRefs} className="relative h-screen w-full overflow-hidden">
           <Image
-            src="/images/backgrounds/cosmic-background.png"
+            src="/images/backgrounds/background_2.png"
             alt="Cosmic Background"
             fill
             className="object-cover rotate-180"
@@ -511,7 +625,7 @@ export default function Home() {
         {/* Fifth Section - Token Section */}
         <section id="token" ref={addToRefs} className="token-section">
           <Image
-            src="/images/backgrounds/cosmic-background.png"
+            src="/images/backgrounds/background_2.png"
             alt="Cosmic Background"
             fill
             className="token-background"
@@ -589,7 +703,7 @@ export default function Home() {
         {/* Sixth Section - NFT Showcase */}
         <section id="nft" ref={addToRefs} className="relative min-h-screen ">
           <Image
-            src="/images/backgrounds/cosmic-background.png"
+            src="/images/backgrounds/background_2.png"
             alt="Cosmic Background"
             fill
             className="object-cover -scale-y-100 -z-[1]"
@@ -597,7 +711,7 @@ export default function Home() {
           />
           <div className="relative z-[20]">
             <NftShowcase />
-            <Footer />
+            <Footer ref={footerRef} />
           </div>
         </section>
 

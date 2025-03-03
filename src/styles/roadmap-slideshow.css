@@ -310,14 +310,14 @@
     font-size: 3.5rem;
     text-align: center;
     margin-bottom: 1.5rem;
-    transform: translateX(0%) translateY(50%) !important;
+    transform: translateX(0%) translateY(100%) !important;
   }
 
   .roadmap-slideshow {
     width: 100%;
     height: 100px;
     max-width: 300px;
-    transform: translateX(0%) translateY(50%) !important;
+    transform: translateX(0%) translateY(100%) !important;
   }
 
   .preview-slide {
@@ -331,7 +331,7 @@
   }
 
   .roadmap-nav {
-    margin-top: 1rem !important ;
+    margin-top: 7rem !important ;
   }
 
   .nav-dot {
@@ -348,7 +348,7 @@
   .ship-container {
     width: 250px;
     height: 250px;
-    transform: translateX(40%) translateY(-100%) !important;
+    transform: translateX(40%) translateY(-5rem) !important;
   }
 
   @keyframes float {
@@ -372,12 +372,14 @@
     font-size: 2.5rem;
     text-align: center;
     margin-bottom: 1.5rem;
+    transform: translateX(0rem) translateY(8rem) !important;
   }
 
   .roadmap-slideshow {
     width: 100%;
     height: 100px;
     max-width: 300px;
+    transform: translateX(0rem) translateY(8rem) !important;
   }
 
   .preview-slide {
@@ -391,7 +393,7 @@
   }
 
   .roadmap-nav {
-    margin-top: 1rem !important ;
+    margin-top: 10rem !important ;
   }
 
   .nav-dot {
@@ -408,7 +410,7 @@
   .ship-container {
     width: 250px;
     height: 250px;
-    transform: translateX(40%) translateY(-70%) !important;
+    transform: translateX(40%) translateY(-60%) !important;
   }
 
   @keyframes float {

@@ -859,10 +859,12 @@
   }
 
   .nft-title {
-    font-size: 1.55rem;
+    font-size: 1.75rem;
     margin: 0.5rem auto;
     text-align: center;
     justify-content: center;
+    letter-spacing: 0.1em;
+    transform: translateX(0rem) translateY(3rem) !important;
   }
 
   .nft-description {
@@ -873,13 +875,14 @@
     line-height: 2;
     letter-spacing: 0.1em;
     color: #ffffff;
+    transform: translateX(0rem) translateY(3rem) !important;
   }
 
   /* NFT Cards Carousel */
   .nft-carousel {
     position: relative;
     top: 50%;
-    transform: translateY(40%);
+    transform: translateY(60%);
     margin-top: 2rem;
   }
 
@@ -949,7 +952,7 @@
     width: 110%;
     margin-top: 2rem;
     overflow: hidden;
-    transform: translateX(-1rem) translateY(13.5rem);
+    transform: translateX(-1rem) translateY(17.5rem);
   }
 
   .rarity-marquee {

@@ -25,11 +25,13 @@ gsap.registerPlugin(ScrollTrigger);
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [contentVisible, setContentVisible] = useState(false);
+  const [, setLoadingError] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const sectionsRef = useRef<HTMLElement[]>([]);
   const navRef = useRef<HTMLElement>(null);
   const heroesRef = useRef<HTMLElement>(null);
   const heroesTimelineRef = useRef<gsap.core.Timeline | null>(null);
+  const hasCompletedInitialLoad = useRef(false);
 
   // Add video refs and hover handlers
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
@@ -85,18 +87,41 @@ export default function Home() {
     }
   };
 
-  const handleLoadComplete = () => {
-    setIsLoading(false);
-    // Delay showing content until loading screen fades out
-    setTimeout(() => {
-      setContentVisible(true);
-      // Smooth scroll to top instead of instant jump
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    }, 1000);
-  };
+  const handleLoadComplete = useCallback(() => {
+    if (hasCompletedInitialLoad.current) return;
+    
+    hasCompletedInitialLoad.current = true;
+    
+    // First ensure we're at the top without animation
+    window.scrollTo(0, 0);
+    
+    // Then set content to visible but opacity 0
+    setContentVisible(true);
+    
+    // Wait for next frame to ensure content is rendered
+    requestAnimationFrame(() => {
+      // Then remove loading screen
+      setIsLoading(false);
+    });
+  }, []);
+
+  // Cleanup function for videos
+  const cleanupVideos = useCallback(() => {
+    videoRefs.current.forEach(video => {
+      if (video) {
+        video.pause();
+        video.src = '';
+        video.load();
+      }
+    });
+    videoRefs.current = [];
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      cleanupVideos();
+    };
+  }, [cleanupVideos]);
 
   // Initialize GSAP animations
   const initializeAnimations = () => {
@@ -382,10 +407,17 @@ export default function Home() {
 
   return (
     <>
-      {isLoading && <LoadingScreen onLoadComplete={handleLoadComplete} />}
+      {isLoading && (
+        <LoadingScreen 
+          onLoadComplete={handleLoadComplete}
+          onError={() => setLoadingError(true)} 
+        />
+      )}
       <div 
         ref={containerRef} 
-        className={`relative bg-black transition-opacity duration-1000 ${contentVisible ? 'opacity-100' : 'opacity-0'}`}
+        className={`relative bg-black transition-opacity duration-1000 ${
+          contentVisible ? 'opacity-100' : 'opacity-0'
+        }`}
       >
         <Navbar ref={navRef} />
 

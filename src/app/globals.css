@@ -28,6 +28,12 @@
   --foreground-rgb: 255, 255, 255;
   --background-start-rgb: 0, 0, 0;
   --background-end-rgb: 0, 0, 0;
+  overflow-x: clip;
+}
+
+html {
+  max-width: 100vw;
+  overflow-x: clip;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -46,6 +52,23 @@ body {
     )
     rgb(var(--background-start-rgb));
   font-family: 'Baron Neue', system-ui, sans-serif;
+  max-width: 100vw;
+  overflow-x: clip;
+}
+
+/* Remove any overflow: hidden from section#lore and its children */
+section#lore {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  overflow: visible !important;
+}
+
+section#lore .relative {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: visible !important;
 }
 
 /* Glow Effects */
@@ -94,26 +117,40 @@ body {
 /* Lore Section */
 .lore-scroll-container {
   transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
   perspective: 1000px;
+  -moz-perspective: 1000px;
   position: relative;
   height: 100%;
   width: 100%;
   overflow: visible;
+  /* Force Firefox to handle 3D properly */
+  transform: translateZ(0);
 }
 
 .lore-item-group {
   transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
   will-change: transform, opacity;
   backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
   perspective: 1000px;
+  -moz-perspective: 1000px;
+  /* Improve Firefox rendering */
+  transform: translate3d(0,0,0);
 }
 
 .lore-item {
   transform-origin: center center;
+  -moz-transform-origin: center center;
   will-change: transform, opacity;
   backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
   pointer-events: none;
   perspective: 1000px;
+  -moz-perspective: 1000px;
+  /* Force GPU acceleration in Firefox */
+  transform: translate3d(0,0,0);
 }
 
 .lore-item video,
@@ -122,12 +159,41 @@ body {
   height: 100%;
   object-fit: contain;
   filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.2));
+  /* Prevent Firefox image rendering issues */
+  transform: translateZ(0);
+  -moz-transform: translateZ(0);
 }
 
 .lore-text-frame {
   box-shadow: 0 0 20px rgba(0, 255, 255, 0.1),
              inset 0 0 30px rgba(0, 255, 255, 0.05);
   transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
   will-change: transform, opacity;
   perspective: 1000px;
+  -moz-perspective: 1000px;
+  /* Force layer creation in Firefox */
+  transform: translate3d(0,0,0);
+}
+
+/* Firefox-specific fixes */
+@-moz-document url-prefix() {
+  .lore-scroll-container,
+  .lore-item-group,
+  .lore-item,
+  .lore-text-frame {
+    /* Force hardware acceleration in Firefox */
+    transform: translate3d(0,0,0);
+    /* Improve text rendering */
+    -moz-osx-font-smoothing: grayscale;
+    /* Better perspective handling */
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+  }
+  
+  /* Fix Firefox perspective issues */
+  body {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+  }
 }

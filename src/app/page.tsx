@@ -25,7 +25,7 @@ gsap.registerPlugin(ScrollTrigger);
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [contentVisible, setContentVisible] = useState(false);
-  const [, setLoadingError] = useState(false);
+  const [loadingError, setLoadingError] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const sectionsRef = useRef<HTMLElement[]>([]);
   const navRef = useRef<HTMLElement>(null);
@@ -412,6 +412,20 @@ export default function Home() {
           onLoadComplete={handleLoadComplete}
           onError={() => setLoadingError(true)} 
         />
+      )}
+      {loadingError && !isLoading && (
+        <div className="fixed inset-0 bg-black z-[1000] flex flex-col items-center justify-center">
+          <h2 className="text-red-500 text-2xl mb-4">Failed to load resources</h2>
+          <button 
+            onClick={() => {
+              setLoadingError(false);
+              setIsLoading(true);
+            }}
+            className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded"
+          >
+            Retry
+          </button>
+        </div>
       )}
       <div 
         ref={containerRef} 

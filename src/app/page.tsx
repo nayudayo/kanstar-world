@@ -86,20 +86,21 @@ export default function Home() {
   };
 
   const handleLoadComplete = () => {
-    // Start fade out animation of loading screen
     setIsLoading(false);
     // Delay showing content until loading screen fades out
     setTimeout(() => {
       setContentVisible(true);
+      // Smooth scroll to top instead of instant jump
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
     }, 1000);
   };
 
   // Initialize GSAP animations
   const initializeAnimations = () => {
     if (!containerRef.current) return;
-
-    // Force scroll to top
-    window.scrollTo(0, 0);
     
     // Clear any existing ScrollTriggers
     ScrollTrigger.getAll().forEach(st => st.kill());
@@ -259,14 +260,21 @@ export default function Home() {
             }, "-=0.3");
           scrollOptimizer.optimizeTimeline(nftTimeline);
         } else if (index !== 3 && index !== 4) { // Skip pin behavior for roadmap (3) and token (4) sections
-          // Default pin behavior for other sections
+          // Use markers in development to debug scroll issues
           ScrollTrigger.create({
             trigger: section,
             start: "top top",
             end: "+=100%",
             pin: true,
             pinSpacing: true,
-            markers: false
+            markers: process.env.NODE_ENV === 'development',
+            anticipatePin: 1, // Helps prevent jarring
+            fastScrollEnd: true, // Better performance
+            preventOverlaps: true, // Prevent multiple pins from conflicting
+            onEnter: () => {
+              // Smooth scroll to section
+              section.scrollIntoView({ behavior: 'smooth' });
+            }
           });
         }
       });
@@ -714,79 +722,6 @@ export default function Home() {
             <Footer ref={footerRef} />
           </div>
         </section>
-
-        {/* Global styles */}
-        <style jsx global>{`
-          .title-glow {
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
-                        0 0 40px rgba(255, 255, 255, 0.6),
-                        0 0 60px rgba(255, 255, 255, 0.4),
-                        0 0 80px rgba(255, 255, 255, 0.2);
-          }
-          .subtitle-glow {
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8),
-                        0 0 30px rgba(255, 215, 0, 0.6),
-                        0 0 45px rgba(255, 215, 0, 0.4);
-          }
-          .token-glow {
-            text-shadow: 0 0 20px rgba(255, 165, 0, 0.8),
-                        0 0 40px rgba(255, 165, 0, 0.6),
-                        0 0 60px rgba(255, 165, 0, 0.4),
-                        0 0 80px rgba(255, 165, 0, 0.2);
-          }
-          .token-container {
-            filter: drop-shadow(0 0 15px rgba(0, 255, 255, 0.2));
-            transition: filter 0.3s ease-out;
-          }
-          .token-container:hover {
-            filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.3));
-          }
-          .collection-button-glow {
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5),
-                       0 0 30px rgba(0, 255, 255, 0.3),
-                       inset 0 0 15px rgba(0, 255, 255, 0.3);
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-          }
-          .lore-scroll-container {
-            transform-style: preserve-3d;
-            perspective: 1000px;
-            position: relative;
-            height: 100%;
-            width: 100%;
-            overflow: visible;
-          }
-          .lore-item-group {
-            transform-style: preserve-3d;
-            will-change: transform, opacity;
-            backface-visibility: hidden;
-            perspective: 1000px;
-          }
-          .lore-item {
-            transform-origin: center center;
-            will-change: transform, opacity;
-            backface-visibility: hidden;
-            pointer-events: none;
-            perspective: 1000px;
-          }
-          .lore-item video,
-          .lore-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.2));
-          }
-          .lore-text-frame {
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.1),
-                       inset 0 0 30px rgba(0, 255, 255, 0.05);
-            transform-style: preserve-3d;
-            will-change: transform, opacity;
-            perspective: 1000px;
-          }
-          .text-glow-sm {
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.6),
-                        0 0 20px rgba(255, 255, 255, 0.4);
-          }
-        `}</style>
       </div>
     </>
   );

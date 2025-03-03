@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { ASSET_MANIFEST } from '../config/assets';
 
 // Loading tips to show during asset loading
@@ -10,6 +10,9 @@ const LOADING_TIPS = [
   "Synchronizing universal frequencies..."
 ];
 
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 1000;
+
 interface LoadingScreenProps {
   onLoadComplete: () => void;
 }
@@ -19,65 +22,101 @@ const LoadingScreen = ({ onLoadComplete }: LoadingScreenProps) => {
   const [currentTip, setCurrentTip] = useState(0);
   const [loadedAssets, setLoadedAssets] = useState(new Set<string>());
   const [isFadingOut, setIsFadingOut] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
-  // Preload single asset
-  const preloadAsset = async (src: string): Promise<void> => {
+  // Preload single asset with retry logic
+  const preloadAsset = useCallback(async (src: string, attempt = 0): Promise<void> => {
     if (loadedAssets.has(src)) return Promise.resolve();
     
-    return new Promise((resolve, reject) => {
-      const img = new window.Image();
-      img.src = src;
-      img.onload = () => {
-        setLoadedAssets(prev => new Set(prev).add(src));
-        resolve();
-      };
-      img.onerror = (error) => {
-        console.error(`Failed to load asset: ${src}`, error);
-        reject(error);
-      };
-    });
-  };
+    try {
+      await new Promise((resolve, reject) => {
+        const img = new window.Image();
+        
+        const timeoutId = setTimeout(() => {
+          img.src = "";
+          reject(new Error(`Timeout loading asset: ${src}`));
+        }, 10000); // 10 second timeout
+        
+        img.onload = () => {
+          clearTimeout(timeoutId);
+          setLoadedAssets(prev => new Set(prev).add(src));
+          resolve(undefined);
+        };
+        
+        img.onerror = (error) => {
+          clearTimeout(timeoutId);
+          reject(error);
+        };
+        
+        img.src = src;
+      });
+    } catch (error) {
+      if (attempt < MAX_RETRIES) {
+        await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
+        return preloadAsset(src, attempt + 1);
+      }
+      throw error;
+    }
+  }, [loadedAssets]);
 
-  // Load all assets
+  // Load assets progressively
   useEffect(() => {
-    const allAssets = [
-      ...Object.values(ASSET_MANIFEST.CRITICAL),
-      ...Object.values(ASSET_MANIFEST.IMAGES)
-    ];
-    const totalAssets = allAssets.length;
-    let loadedCount = 0;
-
+    let mounted = true;
+    
     const loadAssets = async () => {
       try {
         // First load critical assets
-        await Promise.all(
-          Object.values(ASSET_MANIFEST.CRITICAL).map(src => preloadAsset(src))
-        );
-        loadedCount += Object.keys(ASSET_MANIFEST.CRITICAL).length;
-        setProgress((loadedCount / totalAssets) * 100);
+        const criticalAssets = Object.values(ASSET_MANIFEST.CRITICAL);
+        const totalAssets = criticalAssets.length + Object.values(ASSET_MANIFEST.IMAGES).length;
+        let loadedCount = 0;
 
-        // Then load remaining assets
-        await Promise.all(
-          Object.values(ASSET_MANIFEST.IMAGES).map(async (src) => {
+        // Load critical assets first
+        for (const src of criticalAssets) {
+          if (!mounted) return;
+          await preloadAsset(src);
+          loadedCount++;
+          setProgress((loadedCount / totalAssets) * 100);
+        }
+
+        // Then load remaining assets in batches
+        const remainingAssets = Object.values(ASSET_MANIFEST.IMAGES);
+        const BATCH_SIZE = 3; // Load 3 images at a time
+        
+        for (let i = 0; i < remainingAssets.length; i += BATCH_SIZE) {
+          if (!mounted) return;
+          const batch = remainingAssets.slice(i, i + BATCH_SIZE);
+          await Promise.all(batch.map(async (src) => {
             await preloadAsset(src);
             loadedCount++;
             setProgress((loadedCount / totalAssets) * 100);
-          })
-        );
+          }));
+        }
 
         // Ensure all assets are loaded before proceeding
-        if (loadedCount === totalAssets) {
-          // Start fade out animation
+        if (mounted && loadedCount === totalAssets) {
           setIsFadingOut(true);
-          // Call onLoadComplete after fade out animation
           setTimeout(onLoadComplete, 1000);
         }
       } catch (error) {
         console.error('Error loading assets:', error);
-        // Implement retry logic here
-        // For now, we'll proceed anyway after a delay
-        setIsFadingOut(true);
-        setTimeout(onLoadComplete, 2000);
+        if (retryCount < MAX_RETRIES) {
+          setRetryCount(prev => prev + 1);
+          setTimeout(loadAssets, RETRY_DELAY);
+        } else {
+          // If we've exhausted retries, try to proceed with critical assets only
+          const loadedCritical = Object.values(ASSET_MANIFEST.CRITICAL)
+            .every(src => loadedAssets.has(src));
+          
+          if (loadedCritical) {
+            console.warn('Proceeding with critical assets only');
+            setIsFadingOut(true);
+            setTimeout(onLoadComplete, 1000);
+          } else {
+            // If critical assets failed, show error message
+            console.error('Failed to load critical assets');
+            // You might want to show an error UI here
+          }
+        }
       }
     };
 
@@ -88,20 +127,23 @@ const LoadingScreen = ({ onLoadComplete }: LoadingScreenProps) => {
       setCurrentTip(prev => (prev + 1) % LOADING_TIPS.length);
     }, 3000);
 
-    return () => clearInterval(tipInterval);
-  }, [onLoadComplete]);
+    return () => {
+      mounted = false;
+      clearInterval(tipInterval);
+    };
+  }, [onLoadComplete, preloadAsset, retryCount]);
 
   return (
     <div className={`fixed inset-0 bg-black z-[1000] flex flex-col items-center justify-center transition-opacity duration-1000 ${isFadingOut ? 'opacity-0' : 'opacity-100'}`}>
       {/* Logo/Branding */}
       <div className="mb-12">
-        <h1 className="text-white text-6xl font-bold tracking-[0.2em] text-center loading-title-glow">
+        <h1 className="text-white text-4xl md:text-6xl font-bold tracking-[0.2em] text-center loading-title-glow">
           KANSTAR<br />WORLD
         </h1>
       </div>
 
       {/* Loading Bar Container */}
-      <div className="w-[400px] relative">
+      <div className="w-[90%] max-w-[400px] relative">
         {/* Progress Text */}
         <div className="absolute -top-6 left-0 right-0 text-center">
           <span className="text-[#00ffff] text-sm tracking-[0.2em]">
@@ -122,7 +164,7 @@ const LoadingScreen = ({ onLoadComplete }: LoadingScreenProps) => {
 
         {/* Loading Tip */}
         <div className="absolute -bottom-8 left-0 right-0 text-center">
-          <p className="text-white/70 text-sm tracking-wider loading-tip">
+          <p className="text-white/70 text-xs md:text-sm tracking-wider loading-tip">
             {LOADING_TIPS[currentTip]}
           </p>
         </div>

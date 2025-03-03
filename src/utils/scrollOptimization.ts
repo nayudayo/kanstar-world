@@ -17,11 +17,12 @@ export class ScrollOptimizer {
   private scrollTimeout: NodeJS.Timeout | null = null;
   private lastScrollTime: number = 0;
   private options: Required<ScrollOptimizationOptions>;
+  private isScrolling: boolean = false;
 
   private constructor() {
     this.options = {
-      debounceDelay: 150,
-      throttleDelay: 16,
+      debounceDelay: 250,
+      throttleDelay: 32,
       disableOnLowFPS: true,
       fpsThreshold: 30
     };
@@ -68,11 +69,17 @@ export class ScrollOptimizer {
     
     const now = performance.now();
 
-    // Throttle scroll handling
+    // Prevent rapid scroll events
     if (now - this.lastScrollTime < this.options.throttleDelay) {
       return;
     }
     this.lastScrollTime = now;
+
+    // Set scrolling state
+    if (!this.isScrolling) {
+      this.isScrolling = true;
+      document.body.classList.add('is-scrolling');
+    }
 
     // Check FPS and disable animations if too low
     if (this.options.disableOnLowFPS) {
@@ -82,16 +89,20 @@ export class ScrollOptimizer {
       }
     }
 
-    // Debounce scroll end
+    // Debounce scroll end with increased delay
     if (this.scrollTimeout) {
       clearTimeout(this.scrollTimeout);
     }
     this.scrollTimeout = setTimeout(() => {
       this.onScrollEnd();
+      this.isScrolling = false;
+      document.body.classList.remove('is-scrolling');
     }, this.options.debounceDelay);
 
-    // Update ScrollTrigger
-    ScrollTrigger.update();
+    // Update ScrollTrigger less frequently
+    if (now % (this.options.throttleDelay * 2) === 0) {
+      ScrollTrigger.update();
+    }
   };
 
   private optimizeForLowFPS() {
@@ -101,7 +112,7 @@ export class ScrollOptimizer {
     // Reduce ScrollTrigger update frequency
     ScrollTrigger.config({
       limitCallbacks: true,
-      syncInterval: 33.33 // 30fps
+      syncInterval: 50
     });
 
     // Disable smooth scrubbing

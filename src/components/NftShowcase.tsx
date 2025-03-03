@@ -3,6 +3,9 @@ import Image from 'next/image';
 import { gsap } from 'gsap';
 import '../styles/nft-showcase.css';
 
+// Add blur data URLs for better loading experience
+const blurDataURL = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDABQODxIPDRQSEBIXFRQdHx4eHRoaHSQtJSEkLUEwLi0tLTAtQFBGPzpQRT4tLS9gVkVMS0lTUjg/XXFhcWBGS1P/2wBDARUXFx4aHR4eHVBLLy9QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFP/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=";
+
 // Memoized RarityMarquee component
 const RarityMarquee = memo(({ rarity, title, furs, color }: { rarity: string; title: string; furs: string[]; color: string }) => (
   <div className={`rarity-marquee ${rarity}`}>
@@ -139,6 +142,8 @@ const NftShowcase = () => {
         fill
         className="object-cover -scale-x-100 -scale-y-100"
         priority
+        placeholder="blur"
+        blurDataURL={blurDataURL}
       />
       
       {/* Header Section */}
@@ -162,7 +167,10 @@ const NftShowcase = () => {
               alt="Rarity Description Background"
               fill
               className="object-contain"
-              priority
+              priority={false}
+              loading="lazy"
+              placeholder="blur"
+              blurDataURL={blurDataURL}
             />
             
             {/* Content Container */}
@@ -237,7 +245,10 @@ const NftShowcase = () => {
                     alt={`Preview NFT ${offset + 1}`}
                     fill
                     className="object-cover"
-                    priority
+                    priority={false}
+                    loading="lazy"
+                    placeholder="blur"
+                    blurDataURL={blurDataURL}
                   />
                   <div className="nft-card-overlay" />
                 </div>
@@ -267,6 +278,8 @@ const NftShowcase = () => {
                   setSelectedNft(`/images/nft/nft${images[0]}.png`);
                 }}
                 priority
+                placeholder="blur"
+                blurDataURL={blurDataURL}
               />
               <div className="nft-card-overlay" />
             </div>
@@ -296,7 +309,10 @@ const NftShowcase = () => {
                     alt={`Next NFT ${offset + 1}`}
                     fill
                     className="object-cover"
-                    priority
+                    priority={false}
+                    loading="lazy"
+                    placeholder="blur"
+                    blurDataURL={blurDataURL}
                   />
                   <div className="nft-card-overlay" />
                 </div>
@@ -318,6 +334,10 @@ const NftShowcase = () => {
               alt="Selected NFT"
               fill
               className="object-contain"
+              priority={false}
+              loading="lazy"
+              placeholder="blur"
+              blurDataURL={blurDataURL}
             />
           </div>
         </div>

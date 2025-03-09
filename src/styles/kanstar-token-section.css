@@ -103,29 +103,305 @@
 }
 
 /* Desktop Breakpoint (≥1536px) */
-@media screen and (min-width: 1536px) {
+@media screen and (max-width: 1920px) {
+  /* Token Section Layout */
   .token-container {
     padding: 0 7.5rem;
+    gap: 2rem;
   }
 
+  /* Main Token Visual */
   .token-kanstar {
-    width: 900px;
-    height: 900px;
+    width: 500px;
+    height: 500px;
+    transform: translateX(-5%);
   }
 
+  /* Center Content Area */
   .token-center {
     margin: 0 5rem;
+    gap: 0rem;
   }
 
+  /* Typography */
   .token-title {
     font-size: 4rem;
+    letter-spacing: 0.1em;
+    margin-bottom: -10rem;
+    margin-top: -10rem;
   }
 
+  /* Add specific styling for first title to reduce gap */
+  .token-title:first-of-type {
+    margin-bottom: -15rem; /* Increased negative margin to pull the second title closer */
+  }
+
+  /* Add specific styling for second title */
+  .token-title:last-of-type {
+    margin-top: -15rem; /* Increased negative margin to pull closer to first title */
+  }
+
+  /* Token Image Sizing */
   .token-image {
     width: 500px;
     height: 500px;
+    object-fit: contain;
+    margin-bottom: -10rem;
+    margin-top: -10rem;
   }
-}
+
+
+  /* Additional Elements */
+  .token-description {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    max-width: 80%;
+  }
+
+  .token-stats {
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .token-stat-item {
+    font-size: 1.1rem;
+  }
+
+  .token-buttons {
+    margin-top: 2.5rem;
+    gap: 1.5rem;
+  }
+
+  .token-button {
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+  }
+} 
+
+@media screen and (max-width: 1536px) {
+  /* Token Section Layout */
+  .token-container {
+    padding: 0 7.5rem;
+    gap: 2rem;
+  }
+
+  /* Main Token Visual */
+  .token-kanstar {
+    width: 500px;
+    height: 500px;
+    transform: translateX(-5%);
+  }
+
+  /* Center Content Area */
+  .token-center {
+    margin: 0 5rem;
+    gap: 0rem;
+  }
+
+  /* Typography */
+  .token-title {
+    font-size: 4rem;
+    letter-spacing: 0.1em;
+    margin-bottom: -10rem;
+    margin-top: -10rem;
+  }
+
+  /* Add specific styling for first title to reduce gap */
+  .token-title:first-of-type {
+    margin-bottom: -15rem; /* Increased negative margin to pull the second title closer */
+  }
+
+  /* Add specific styling for second title */
+  .token-title:last-of-type {
+    margin-top: -15rem; /* Increased negative margin to pull closer to first title */
+  }
+
+  /* Token Image Sizing */
+  .token-image {
+    width: 500px;
+    height: 500px;
+    object-fit: contain;
+    margin-bottom: -10rem;
+    margin-top: -10rem;
+  }
+
+
+  /* Additional Elements */
+  .token-description {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    max-width: 80%;
+  }
+
+  .token-stats {
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .token-stat-item {
+    font-size: 1.1rem;
+  }
+
+  .token-buttons {
+    margin-top: 2.5rem;
+    gap: 1.5rem;
+  }
+
+  .token-button {
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+  }
+} 
+
+@media screen and (max-width: 1440px) {
+  /* Token Section Layout */
+  .token-container {
+    padding: 0 7.5rem;
+    gap: 2rem;
+  }
+
+  /* Main Token Visual */
+  .token-kanstar {
+    width: 500px;
+    height: 500px;
+    transform: translateX(-5%);
+  }
+
+  /* Center Content Area */
+  .token-center {
+    margin: 0 5rem;
+    gap: 0rem;
+  }
+
+  /* Typography */
+  .token-title {
+    font-size: 4rem;
+    letter-spacing: 0.1em;
+    margin-bottom: -10rem;
+    margin-top: -10rem;
+  }
+
+  /* Add specific styling for first title to reduce gap */
+  .token-title:first-of-type {
+    margin-bottom: -15rem; /* Increased negative margin to pull the second title closer */
+  }
+
+  /* Add specific styling for second title */
+  .token-title:last-of-type {
+    margin-top: -15rem; /* Increased negative margin to pull closer to first title */
+  }
+
+  /* Token Image Sizing */
+  .token-image {
+    width: 500px;
+    height: 500px;
+    object-fit: contain;
+    margin-bottom: -10rem;
+    margin-top: -10rem;
+  }
+
+
+  /* Additional Elements */
+  .token-description {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    max-width: 80%;
+  }
+
+  .token-stats {
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .token-stat-item {
+    font-size: 1.1rem;
+  }
+
+  .token-buttons {
+    margin-top: 2.5rem;
+    gap: 1.5rem;
+  }
+
+  .token-button {
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+  }
+} 
+
+@media screen and (max-width: 1356px) {
+  /* Token Section Layout */
+  .token-container {
+    padding: 0 7.5rem;
+    gap: 2rem;
+  }
+
+  /* Main Token Visual */
+  .token-kanstar {
+    width: 500px;
+    height: 500px;
+    transform: translateX(-5%);
+  }
+
+  /* Center Content Area */
+  .token-center {
+    margin: 0 5rem;
+    gap: 0rem;
+  }
+
+  /* Typography */
+  .token-title {
+    font-size: 4rem;
+    letter-spacing: 0.1em;
+    margin-bottom: -10rem;
+    margin-top: -10rem;
+  }
+
+  /* Add specific styling for first title to reduce gap */
+  .token-title:first-of-type {
+    margin-bottom: -15rem; /* Increased negative margin to pull the second title closer */
+  }
+
+  /* Add specific styling for second title */
+  .token-title:last-of-type {
+    margin-top: -15rem; /* Increased negative margin to pull closer to first title */
+  }
+
+  /* Token Image Sizing */
+  .token-image {
+    width: 500px;
+    height: 500px;
+    object-fit: contain;
+    margin-bottom: -10rem;
+    margin-top: -10rem;
+  }
+
+
+  /* Additional Elements */
+  .token-description {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    max-width: 80%;
+  }
+
+  .token-stats {
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .token-stat-item {
+    font-size: 1.1rem;
+  }
+
+  .token-buttons {
+    margin-top: 2.5rem;
+    gap: 1.5rem;
+  }
+
+  .token-button {
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+  }
+} 
 
 @media screen and (max-width: 415px) {
   .token-container {
@@ -371,3 +647,4 @@
     bottom: -200px;
   }
 } 
+

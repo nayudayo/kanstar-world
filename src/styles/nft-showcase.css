@@ -68,6 +68,32 @@
   padding: 2rem;
 }
 
+/* Rarity Level Text Colors */
+.rarity-level-title.rarity-legendary {
+  color: #FFD700; /* Gold */
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+.rarity-level-title.rarity-epic {
+  color: #A335EE; /* Purple */
+  text-shadow: 0 0 10px rgba(163, 53, 238, 0.3);
+}
+
+.rarity-level-title.rarity-rare {
+  color: #0070DD; /* Blue */
+  text-shadow: 0 0 10px rgba(0, 112, 221, 0.3);
+}
+
+.rarity-level-title.rarity-uncommon {
+  color: #1EFF00; /* Green */
+  text-shadow: 0 0 10px rgba(30, 255, 0, 0.3);
+}
+
+.rarity-level-title.rarity-common {
+  color: #FFFFFF; /* White */
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
 /* Header Section */
 .nft-header {
   position: absolute;
@@ -141,7 +167,7 @@
 }
 
 /* Desktop Breakpoint (≥1536px) */
-@media screen and (min-width: 1536px) {
+@media screen and (min-width: 1920px) {
   .nft-container {
     padding: 0 7.5rem;
   }
@@ -154,18 +180,20 @@
   .rarity-container {
     width: 900px;
     height: 900px;
-    transform: translateX(10rem);
+    transform: translateX(95%) translateY(-15rem) scale(0.75) !important;
   }
 
   .rarity-content {
+    font-size: 1.75rem !important;
+    line-height: 3rem !important;
     padding: 2rem;
     gap: 0;
-    transform: translateX(6rem);
+    transform: translateX(10rem) !important;
     margin-top: 2rem;
   }
 
   .nft-title {
-    font-size: 4.5rem;
+    font-size: 3.5rem !important;
     line-height: 1.1;
     letter-spacing: 0.2em;
     margin-top: 3.5rem;
@@ -188,7 +216,235 @@
   .nft-cards-container {
     height: 500px;
     margin-top: 120px;
-    transform: translateY(4rem);
+    transform: translateX(-10rem) translateY(3rem) !important;
+  }
+
+  .nft-card {
+    width: 320px;
+  }
+}
+
+@media screen and (max-width: 1728px) {
+  .nft-container {
+    padding: 0 7.5rem;
+  }
+
+  .nft-slideshow {
+    width: 900px;
+    height: 900px;
+  }
+
+  .rarity-container {
+    width: 900px;
+    height: 900px;
+    transform: translateX(75%) translateY(-11rem) scale(0.75) !important;
+  }
+
+  .rarity-content {
+    font-size: 1.75rem !important;
+    line-height: 3rem !important;
+    padding: 2rem;
+    gap: 0;
+    transform: translateX(10rem) !important;
+    margin-top: 2rem;
+  }
+
+  .nft-title {
+    font-size: 3.2rem !important;
+    line-height: 1.1;
+    letter-spacing: 0.2em;
+    margin-top: 3.5rem;
+  }
+
+  .nft-description {
+    font-size: 1.25rem;
+    line-height: 1.75;
+    max-width: 32rem;
+    letter-spacing: 0.05em;
+    margin-top: 4rem;
+  }
+
+  .nft-slider {
+    width: 1000px;
+    height: 500px;
+    margin-left: 8rem;
+  }
+
+  .nft-cards-container {
+    height: 500px;
+    margin-top: 120px;
+    transform: translateX(-15rem) translateY(3rem) scale(0.85) !important;
+  }
+
+  .nft-card {
+    width: 320px;
+  }
+}
+
+@media screen and (max-width: 1536px) {
+  .nft-container {
+    padding: 0 7.5rem;
+  }
+
+  .nft-slideshow {
+    width: 900px;
+    height: 900px;
+  }
+
+  .rarity-container {
+    width: 900px;
+    height: 900px;
+    transform: translateX(75%) translateY(-11rem) scale(0.75) !important;
+  }
+
+  .rarity-content {
+    font-size: 1.75rem !important;
+    line-height: 3rem !important;
+    padding: 2rem;
+    gap: 0;
+    transform: translateX(10rem) !important;
+    margin-top: 2rem;
+  }
+
+  .nft-title {
+    font-size: 3.2rem !important;
+    line-height: 1.1;
+    letter-spacing: 0.2em;
+    margin-top: 3.5rem;
+  }
+
+  .nft-description {
+    font-size: 1.25rem;
+    line-height: 1.75;
+    max-width: 32rem;
+    letter-spacing: 0.05em;
+    margin-top: 4rem;
+  }
+
+  .nft-slider {
+    width: 1000px;
+    height: 500px;
+    margin-left: 8rem;
+  }
+
+  .nft-cards-container {
+    height: 500px;
+    margin-top: 120px;
+    transform: translateX(-15rem) translateY(3rem) scale(0.85) !important;
+  }
+
+  .nft-card {
+    width: 320px;
+  }
+}
+
+@media screen and (max-width: 1440px) {
+  .nft-container {
+    padding: 0 7.5rem;
+  }
+
+  .nft-slideshow {
+    width: 900px;
+    height: 900px;
+  }
+
+  .rarity-container {
+    width: 900px;
+    height: 900px;
+    transform: translateX(65%) translateY(-11rem) scale(0.75) !important;
+  }
+
+  .rarity-content {
+    font-size: 1.75rem !important;
+    line-height: 3rem !important;
+    padding: 2rem;
+    gap: 0;
+    transform: translateX(10rem) !important;
+    margin-top: 2rem;
+  }
+
+  .nft-title {
+    font-size: 3.2rem !important;
+    line-height: 1.1;
+    letter-spacing: 0.2em;
+    margin-top: 3.5rem;
+  }
+
+  .nft-description {
+    font-size: 1.25rem;
+    line-height: 1.75;
+    max-width: 32rem;
+    letter-spacing: 0.05em;
+    margin-top: 4rem;
+  }
+
+  .nft-slider {
+    width: 1000px;
+    height: 500px;
+    margin-left: 8rem;
+  }
+
+  .nft-cards-container {
+    height: 500px;
+    margin-top: 120px;
+    transform: translateX(-15rem) translateY(3rem) scale(0.85) !important;
+  }
+
+  .nft-card {
+    width: 320px;
+  }
+}
+
+@media screen and (max-width: 1356px) {
+  .nft-container {
+    padding: 0 7.5rem;
+  }
+
+  .nft-slideshow {
+    width: 900px;
+    height: 900px;
+  }
+
+  .rarity-container {
+    width: 900px;
+    height: 900px;
+    transform: translateX(65%) translateY(-11rem) scale(0.75) !important;
+  }
+
+  .rarity-content {
+    font-size: 1.75rem !important;
+    line-height: 3rem !important;
+    padding: 2rem;
+    gap: 0;
+    transform: translateX(10rem) !important;
+    margin-top: 2rem;
+  }
+
+  .nft-title {
+    font-size: 3.2rem !important;
+    line-height: 1.1;
+    letter-spacing: 0.2em;
+    margin-top: 3.5rem;
+  }
+
+  .nft-description {
+    font-size: 1.25rem;
+    line-height: 1.75;
+    max-width: 32rem;
+    letter-spacing: 0.05em;
+    margin-top: 4rem;
+  }
+
+  .nft-slider {
+    width: 1000px;
+    height: 500px;
+    margin-left: 8rem;
+  }
+
+  .nft-cards-container {
+    height: 500px;
+    margin-top: 120px;
+    transform: translateX(-15rem) translateY(3rem) scale(0.85) !important;
   }
 
   .nft-card {
@@ -250,7 +506,7 @@
   .nft-carousel {
     position: relative;
     top: 50%;
-    transform: translateY(70%);
+    transform: translateX(60.5%) translateY(90%);
     margin-top: 2rem;
   }
 
@@ -320,7 +576,7 @@
     width: 120%;
     margin-top: 2rem;
     overflow: hidden;
-    transform: translateX(-1rem) translateY(14.5rem);
+    transform: translateX(-1rem) translateY(12rem);
   }
 
   .rarity-marquee {
@@ -407,7 +663,7 @@
   }
 } 
 
-@media screen and (max-width: 391px) {
+@media screen and (max-width: 390px) {
   .nft-container {
     grid-template-columns: 1fr;
     padding: 1rem;
@@ -439,7 +695,7 @@
   }
 
   .nft-title {
-    font-size: 2.55rem;
+    font-size: 2.55rem !important;
     margin: 0.5rem auto;
     text-align: center;
     justify-content: center;
@@ -460,7 +716,7 @@
   .nft-carousel {
     position: relative;
     top: 50%;
-    transform: translateY(70%);
+    transform: translateY(50%) translateX(65%);
     margin-top: 2rem;
   }
 
@@ -530,7 +786,7 @@
     width: 120%;
     margin-top: 2rem;
     overflow: hidden;
-    transform: translateX(-1rem) translateY(14.5rem);
+    transform: translateX(-1rem) translateY(11.5rem);
   }
 
   .rarity-marquee {
@@ -859,12 +1115,11 @@
   }
 
   .nft-title {
-    font-size: 1.75rem;
-    margin: 0.5rem auto;
+    font-size: 2.35rem !important;
+    margin: 2rem auto;
     text-align: center;
     justify-content: center;
     letter-spacing: 0.1em;
-    transform: translateX(0rem) translateY(3rem) !important;
   }
 
   .nft-description {
@@ -875,14 +1130,13 @@
     line-height: 2;
     letter-spacing: 0.1em;
     color: #ffffff;
-    transform: translateX(0rem) translateY(3rem) !important;
   }
 
   /* NFT Cards Carousel */
   .nft-carousel {
     position: relative;
     top: 50%;
-    transform: translateY(60%);
+    transform: translateY(70%) translateX(65%);
     margin-top: 2rem;
   }
 
@@ -949,10 +1203,10 @@
   /* Marquee Rarity Section */
   .rarity-marquee-section {
     position: relative;
-    width: 110%;
+    width: 120%;
     margin-top: 2rem;
     overflow: hidden;
-    transform: translateX(-1rem) translateY(17.5rem);
+    transform: translateX(-1rem) translateY(11.5rem);
   }
 
   .rarity-marquee {
@@ -964,10 +1218,11 @@
   .rarity-marquee-item {
     display: flex;
     align-items: center;
-    padding: 0.5rem 1rem;
-    margin: 0 0.5rem;
+    padding: 0.7rem 1rem;
+    margin: 0 0.3rem;
     border-radius: 0.5rem;
     white-space: nowrap;
+    margin-top: 0.5rem;
   }
 
   /* Rarity Level Marquees */
@@ -1036,4 +1291,4 @@
       transform: translateX(-50%);
     }
   }
-} 
+}

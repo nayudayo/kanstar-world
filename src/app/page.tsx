@@ -2,14 +2,18 @@
 
 import Image from "next/image";
 import { useRef, useState, useEffect, useCallback } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap } from "gsap/dist/gsap";
+import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import NftShowcase from "../components/NftShowcase";
-import RoadmapSlideshow from "../components/RoadmapSlideshow";
-import LoadingScreen from "../components/LoadingScreen";
-import OptimizedVideo from "../components/OptimizedVideo";
+import dynamic from 'next/dynamic';
+
+// Dynamic imports for heavy components
+const Footer = dynamic(() => import("../components/Footer"), { ssr: false });
+const NftShowcase = dynamic(() => import("../components/NftShowcase"), { ssr: false });
+const RoadmapSlideshow = dynamic(() => import("../components/RoadmapSlideshow"), { ssr: false });
+const LoadingScreen = dynamic(() => import("../components/LoadingScreen"), { ssr: false });
+const OptimizedVideo = dynamic(() => import("../components/OptimizedVideo"), { ssr: false });
+
 import { ASSET_MANIFEST } from "../config/assets";
 import { usePerformanceMonitoring } from "../hooks/usePerformanceMonitoring";
 import { scrollOptimizer } from "../utils/scrollOptimization";
@@ -52,6 +56,29 @@ export default function Home() {
     }
   }, []);
 
+  // Show loading screen immediately on mount
+  useEffect(() => {
+    setIsLoading(true);
+    setContentVisible(false);
+  }, []);
+
+  const handleLoadComplete = useCallback(() => {
+    if (hasCompletedInitialLoad.current) return;
+    
+    hasCompletedInitialLoad.current = true;
+    
+    // First ensure we're at the top without animation
+    window.scrollTo(0, 0);
+    
+    // Set content to visible but opacity 0
+    setContentVisible(true);
+    
+    // Small delay to ensure smooth transition
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 100);
+  }, []);
+
   // Initialize performance monitoring
   usePerformanceMonitoring({
     onPerformanceIssue: (metric, value) => {
@@ -87,24 +114,6 @@ export default function Home() {
     }
   };
 
-  const handleLoadComplete = useCallback(() => {
-    if (hasCompletedInitialLoad.current) return;
-    
-    hasCompletedInitialLoad.current = true;
-    
-    // First ensure we're at the top without animation
-    window.scrollTo(0, 0);
-    
-    // Then set content to visible but opacity 0
-    setContentVisible(true);
-    
-    // Wait for next frame to ensure content is rendered
-    requestAnimationFrame(() => {
-      // Then remove loading screen
-      setIsLoading(false);
-    });
-  }, []);
-
   // Cleanup function for videos
   const cleanupVideos = useCallback(() => {
     videoRefs.current.forEach(video => {
@@ -130,7 +139,19 @@ export default function Home() {
     // Clear any existing ScrollTriggers
     ScrollTrigger.getAll().forEach(st => st.kill());
     
+    // Create a single context for better performance
     const ctx = gsap.context(() => {
+      // Batch ScrollTrigger registrations
+      ScrollTrigger.batch(".animate-on-scroll", {
+        onEnter: batch => gsap.to(batch, {
+          opacity: 1,
+          y: 0,
+          stagger: 0.15,
+          overwrite: true
+        }),
+        once: true
+      });
+
       // Navbar animation
       const navTimeline = gsap.timeline();
       navTimeline.fromTo(navRef.current,
@@ -169,8 +190,73 @@ export default function Home() {
           scrollOptimizer.optimizeTimeline(landingTimeline);
         } else if (index === 1) {
           // Second Section - Heroes Animation
-          // Create the timeline but don't play it yet
-          heroesTimelineRef.current = gsap.timeline({ paused: true });
+          const heroesTimeline = gsap.timeline({
+            scrollTrigger: {
+              trigger: section,
+              start: "top center+=20%",
+              end: "bottom center",
+              scrub: false,
+              once: false,
+              onEnter: () => {
+                gsap.to(section.querySelector('.heroes-container'), {
+                  opacity: 1,
+                  scale: 1,
+                  filter: 'blur(0px)',
+                  y: 0,
+                  duration: 0.8,
+                  ease: "power2.out",
+                  onComplete: () => {
+                    gsap.to(section.querySelector('.heroes-container'), {
+                      scale: 1.05,
+                      duration: 0.4,
+                      ease: "power1.inOut",
+                      yoyo: true,
+                      repeat: 1
+                    });
+                  }
+                });
+              },
+              onLeave: () => {
+                gsap.to(section.querySelector('.heroes-container'), {
+                  opacity: 0,
+                  scale: 0.5,
+                  filter: 'blur(15px)',
+                  y: 50,
+                  duration: 0.4,
+                  ease: "power2.in"
+                });
+              },
+              onEnterBack: () => {
+                gsap.to(section.querySelector('.heroes-container'), {
+                  opacity: 1,
+                  scale: 1,
+                  filter: 'blur(0px)',
+                  y: 0,
+                  duration: 0.8,
+                  ease: "power2.out",
+                  onComplete: () => {
+                    gsap.to(section.querySelector('.heroes-container'), {
+                      scale: 1.05,
+                      duration: 0.4,
+                      ease: "power1.inOut",
+                      yoyo: true,
+                      repeat: 1
+                    });
+                  }
+                });
+              },
+              onLeaveBack: () => {
+                gsap.to(section.querySelector('.heroes-container'), {
+                  opacity: 0,
+                  scale: 0.5,
+                  filter: 'blur(15px)',
+                  y: 50,
+                  duration: 0.4,
+                  ease: "power2.in"
+                });
+              }
+            }
+          });
           
           // Set initial state
           gsap.set(section.querySelector('.heroes-container'), {
@@ -181,25 +267,8 @@ export default function Home() {
             transformOrigin: "center center"
           });
 
-          // Define the animation sequence
-          heroesTimelineRef.current
-            .to(section.querySelector('.heroes-container'), {
-              opacity: 1,
-              scale: 1,
-              filter: 'blur(0px)',
-              y: 0,
-              duration: 0.8,
-              ease: "power2.out"
-            })
-            .to(section.querySelector('.heroes-container'), {
-              scale: 1.05,
-              duration: 0.4,
-              ease: "power1.inOut",
-              yoyo: true,
-              repeat: 1
-            });
-
-          scrollOptimizer.optimizeTimeline(heroesTimelineRef.current);
+          scrollOptimizer.optimizeTimeline(heroesTimeline);
+          heroesTimelineRef.current = heroesTimeline;
         } else if (index === 2) {
           // Third Section - Lore Section
           // Story telling animation - One smooth continuous motion
@@ -338,49 +407,12 @@ export default function Home() {
       }
     }, containerRef);
 
-    return () => ctx.revert();
+    // Cleanup function
+    return () => {
+      ctx.revert();
+      ScrollTrigger.getAll().forEach(st => st.kill());
+    };
   };
-
-  // Handle Heroes section visibility
-  useEffect(() => {
-    if (!heroesRef.current || !heroesTimelineRef.current) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            // When entering view, add a delay before playing
-            setTimeout(() => {
-              heroesTimelineRef.current?.play();
-            }, 200);
-          } else {
-            // When leaving view, reverse the animation
-            if (entry.boundingClientRect.top > 0) {
-              // Scrolling up
-              gsap.to(entry.target.querySelector('.heroes-container'), {
-                opacity: 0,
-                scale: 0.5,
-                filter: 'blur(15px)',
-                y: 50,
-                duration: 0.4,
-                ease: "power2.in",
-                onComplete: () => {
-                  heroesTimelineRef.current?.pause(0);
-                }
-              });
-            }
-          }
-        });
-      },
-      {
-        threshold: 0.6,
-      }
-    );
-
-    observer.observe(heroesRef.current);
-
-    return () => observer.disconnect();
-  }, [contentVisible]);
 
   // Add state for sidebar visibility
   const [showSidebar, setShowSidebar] = useState(true);
@@ -407,12 +439,11 @@ export default function Home() {
 
   return (
     <>
-      {isLoading && (
-        <LoadingScreen 
-          onLoadComplete={handleLoadComplete}
-          onError={() => setLoadingError(true)} 
-        />
-      )}
+      <LoadingScreen 
+        onLoadComplete={handleLoadComplete}
+        onError={() => setLoadingError(true)} 
+      />
+      
       {loadingError && !isLoading && (
         <div className="fixed inset-0 bg-black z-[1000] flex flex-col items-center justify-center">
           <h2 className="text-red-500 text-2xl mb-4">Failed to load resources</h2>
@@ -427,6 +458,7 @@ export default function Home() {
           </button>
         </div>
       )}
+      
       <div 
         ref={containerRef} 
         className={`relative bg-black transition-opacity duration-1000 ${
@@ -544,7 +576,7 @@ export default function Home() {
           className="wormhole-section"
         >
           <Image
-            src={ASSET_MANIFEST.CRITICAL.BACKGROUND}
+            src="/images/optimized/backgrounds/background_2.webp"
             alt="Cosmic Background"
             fill
             className="object-cover rotate-180"
@@ -569,7 +601,7 @@ export default function Home() {
           
           {/* Heroes Container with animation class */}
           <div className="heroes-container absolute inset-0 flex items-center justify-center">
-            <div className="relative w-[1300px] h-[600px] xl:w-[1400px] xl:h-[650px] sm:w-full sm:h-auto sm:max-w-[320px]">
+            <div className="relative w-[1300px] h-[600px] xl:w-[1400px] xl:h-[650px] sm:w-full sm:h-auto sm:max-w-[320px] lg:max-w-[800px] lg:max-h-[500px]">
               <Image
                 src={ASSET_MANIFEST.IMAGES.HEROES}
                 alt="Kanstar Heroes"
@@ -628,6 +660,7 @@ export default function Home() {
                         fallbackImage={ASSET_MANIFEST.VIDEOS[videoKey].fallback}
                         alt={ASSET_MANIFEST.VIDEOS[videoKey].alt}
                         className="w-full h-full object-cover"
+                        unoptimized={ASSET_MANIFEST.VIDEOS[videoKey].fallback.endsWith('.gif')}
                         ref={(el: HTMLDivElement | null) => {
                           if (el) {
                             const videoEl = el.querySelector('video');
@@ -722,6 +755,7 @@ export default function Home() {
                     fill
                     className="object-contain"
                     priority
+                    unoptimized={true}
                   />
                 </div>
                 <h2 className="token-title">
@@ -765,7 +799,7 @@ export default function Home() {
           />
           <div className="relative z-[20]">
             <NftShowcase />
-            <Footer ref={footerRef} />
+            <Footer ref={footerRef} unoptimized={true} />
           </div>
         </section>
       </div>

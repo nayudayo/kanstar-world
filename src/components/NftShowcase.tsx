@@ -150,9 +150,9 @@ const NftShowcase = () => {
       <div className="nft-header">
         <div className="nft-header-content">
           <h2 className="nft-title">
-            4444: A CHARMINGLY<br />
-            CRAFTED<br />
-            COLLECTION.
+            4444:<br />
+            A CHARMINGLY
+            CRAFTED COLLECTION.
           </h2>
           <p className="nft-description">
             #1 Most Voted Community Collection on Ronin Kanstar is the ultimate cosmic good boy, a legendary fusion between a celestial being and a doggo a uniquely star-shaped backside. 

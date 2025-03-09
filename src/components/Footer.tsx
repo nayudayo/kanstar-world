@@ -5,9 +5,20 @@ import { ASSET_MANIFEST } from '../config/assets';
 import '../styles/footer.css';
 import { forwardRef } from 'react';
 
-const Footer = forwardRef<HTMLElement>((props, ref) => {
+interface FooterProps {
+  unoptimized?: boolean;
+}
+
+const Footer = forwardRef<HTMLElement, FooterProps>(({ unoptimized = false }, ref) => {
   return (
-    <footer ref={ref} className="footer">
+    <footer ref={ref} className="relative w-full h-[300px] bg-black/50">
+      <Image
+        src="/images/assets/footer.gif"
+        alt="Footer Animation"
+        fill
+        className="object-cover opacity-50"
+        unoptimized={unoptimized}
+      />
       <div className="footer-container footer-grid">
         {/* GIF Column */}
         <div className="footer-video">

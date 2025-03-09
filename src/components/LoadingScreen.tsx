@@ -12,8 +12,10 @@ const LOADING_TIPS = [
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000;
-const MOBILE_BATCH_SIZE = 2;
-const DESKTOP_BATCH_SIZE = 3;
+const MOBILE_BATCH_SIZE = 1;
+const DESKTOP_BATCH_SIZE = 2;
+const MOBILE_TIMEOUT = 20000;
+const DESKTOP_TIMEOUT = 15000;
 
 interface LoadingScreenProps {
   onLoadComplete: () => void;
@@ -27,6 +29,7 @@ const LoadingScreen = ({ onLoadComplete, onError }: LoadingScreenProps) => {
   const [isFadingOut, setIsFadingOut] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const [hasError, setHasError] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
 
   // Check if device is mobile
   const isMobile = typeof window !== 'undefined' && 
@@ -36,6 +39,16 @@ const LoadingScreen = ({ onLoadComplete, onError }: LoadingScreenProps) => {
   const preloadAsset = useCallback(async (src: string, attempt = 0): Promise<void> => {
     if (loadedAssets.has(src)) return Promise.resolve();
     
+    // Clear memory before loading new asset
+    if (isMobile) {
+      try {
+        // Force garbage collection if possible
+        if (window.gc) window.gc();
+      } catch {
+        // Ignore if gc is not available
+      }
+    }
+    
     try {
       await new Promise((resolve, reject) => {
         const img = new window.Image();
@@ -43,7 +56,7 @@ const LoadingScreen = ({ onLoadComplete, onError }: LoadingScreenProps) => {
         const timeoutId = setTimeout(() => {
           img.src = "";
           reject(new Error(`Timeout loading asset: ${src}`));
-        }, isMobile ? 15000 : 10000); // Longer timeout for mobile
+        }, isMobile ? MOBILE_TIMEOUT : DESKTOP_TIMEOUT);
         
         img.onload = () => {
           clearTimeout(timeoutId);
@@ -56,22 +69,36 @@ const LoadingScreen = ({ onLoadComplete, onError }: LoadingScreenProps) => {
           reject(error);
         };
         
+        // Add crossOrigin to help with memory management
+        img.crossOrigin = "anonymous";
         img.src = src;
       });
     } catch (error) {
       if (attempt < MAX_RETRIES) {
-        await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
+        // Add increasing delay between retries
+        await new Promise(resolve => setTimeout(resolve, RETRY_DELAY * (attempt + 1)));
         return preloadAsset(src, attempt + 1);
       }
       throw error;
     }
   }, [loadedAssets, isMobile]);
 
-  // Load assets progressively
+  // Modify the useEffect to handle immediate mounting
   useEffect(() => {
+    // Show loading screen immediately
+    setIsVisible(true);
     let mounted = true;
-    let loadingTimeout: NodeJS.Timeout;
     
+    // Start loading tips rotation immediately
+    const tipInterval = setInterval(() => {
+      setCurrentTip(prev => (prev + 1) % LOADING_TIPS.length);
+    }, 3000);
+
+    // Begin asset loading in the next frame
+    requestAnimationFrame(() => {
+      loadAssets();
+    });
+
     const loadAssets = async () => {
       try {
         // First load critical assets
@@ -87,29 +114,31 @@ const LoadingScreen = ({ onLoadComplete, onError }: LoadingScreenProps) => {
           setProgress((loadedCount / totalAssets) * 100);
         }
 
-        // Then load remaining assets in batches
+        // Then load remaining assets in smaller batches
         const remainingAssets = Object.values(ASSET_MANIFEST.IMAGES);
         const BATCH_SIZE = isMobile ? MOBILE_BATCH_SIZE : DESKTOP_BATCH_SIZE;
         
         for (let i = 0; i < remainingAssets.length; i += BATCH_SIZE) {
           if (!mounted) return;
           const batch = remainingAssets.slice(i, i + BATCH_SIZE);
+          
+          // Add delay between batches
+          if (i > 0) {
+            await new Promise(resolve => setTimeout(resolve, isMobile ? 300 : 100));
+          }
+          
           await Promise.all(batch.map(async (src) => {
             await preloadAsset(src);
             loadedCount++;
             setProgress((loadedCount / totalAssets) * 100);
           }));
-
-          // Add small delay between batches on mobile
-          if (isMobile) {
-            await new Promise(resolve => setTimeout(resolve, 100));
-          }
         }
 
         // Ensure all assets are loaded before proceeding
         if (mounted && loadedCount === totalAssets) {
+          // Add a small delay before transition
+          await new Promise(resolve => setTimeout(resolve, 500));
           setIsFadingOut(true);
-          // Use requestAnimationFrame for smoother transition
           requestAnimationFrame(() => {
             setTimeout(onLoadComplete, 1000);
           });
@@ -121,7 +150,8 @@ const LoadingScreen = ({ onLoadComplete, onError }: LoadingScreenProps) => {
         
         if (retryCount < MAX_RETRIES) {
           setRetryCount(prev => prev + 1);
-          loadingTimeout = setTimeout(loadAssets, RETRY_DELAY);
+          // Increase delay between retries
+          setTimeout(loadAssets, RETRY_DELAY * (retryCount + 1));
         } else {
           // If we've exhausted retries, try to proceed with critical assets only
           const loadedCritical = Object.values(ASSET_MANIFEST.CRITICAL)
@@ -134,7 +164,6 @@ const LoadingScreen = ({ onLoadComplete, onError }: LoadingScreenProps) => {
               setTimeout(onLoadComplete, 1000);
             });
           } else {
-            // If critical assets failed, show error message
             console.error('Failed to load critical assets');
             if (onError) onError();
           }
@@ -142,25 +171,21 @@ const LoadingScreen = ({ onLoadComplete, onError }: LoadingScreenProps) => {
       }
     };
 
-    loadAssets();
-
-    // Rotate tips every 3 seconds
-    const tipInterval = setInterval(() => {
-      setCurrentTip(prev => (prev + 1) % LOADING_TIPS.length);
-    }, 3000);
-
     return () => {
       mounted = false;
       clearInterval(tipInterval);
-      clearTimeout(loadingTimeout);
     };
-  }, [onLoadComplete, preloadAsset, retryCount, isMobile, onError]);
+  }, []);
 
   return (
     <div 
       className={`fixed inset-0 bg-black z-[1000] flex flex-col items-center justify-center transition-opacity duration-1000 ${
         isFadingOut ? 'opacity-0' : 'opacity-100'
       }`}
+      style={{ 
+        visibility: isVisible ? 'visible' : 'hidden',
+        pointerEvents: isVisible ? 'auto' : 'none'
+      }}
     >
       {/* Logo/Branding */}
       <div className="mb-12">

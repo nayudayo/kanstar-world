@@ -75,7 +75,7 @@
 }
 
 /* Desktop Breakpoint (≥1536px) */
-@media screen and (min-width: 1536px) {
+@media screen and (min-width: 1440px) {
   .wormhole-title {
     font-size: 4rem;
   }
@@ -85,8 +85,23 @@
   }
 
   .wormhole-image {
-    width: 900px;
-    height: 900px;
+    width: 600px;
+    height: 600px;
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  .wormhole-title {
+    font-size: 4rem;
+  }
+
+  .wormhole-subtitle {
+    font-size: 2rem;
+  }
+
+  .wormhole-image {
+    width: 400px;
+    height: 400px;
   }
 }
 
